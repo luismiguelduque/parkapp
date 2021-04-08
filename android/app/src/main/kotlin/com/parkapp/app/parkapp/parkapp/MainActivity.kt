@@ -1,4 +1,4 @@
-package com.parkapp.app.parkapp.parkapp
+package com.parkapp.app.parkapp
 
 import io.flutter.embedding.android.FlutterActivity
 
