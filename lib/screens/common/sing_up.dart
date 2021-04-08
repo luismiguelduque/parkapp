@@ -1,7 +1,7 @@
-//import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:parkapp/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   UserModel _tempUser= new UserModel();
   bool _isSaving=false;
-  //final _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   String _errorMsg;
   Map _userData;
 /*

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:parkapp/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +32,7 @@ class _SignInState extends State<SignIn> {
     //SimpleAuthFlutter.init(context);
   }
 
-  //final _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _isSaving = false;
   String _email;
@@ -418,8 +418,9 @@ class _SignInState extends State<SignIn> {
       _isSaving = true;
     });
     final resp = await Provider.of<AuthProvider>(context, listen: false).logIn(_email, _password);
+    print(resp['success']);
     if (resp['success']) {
-      //await _auth.signInAnonymously();
+      await _auth.signInAnonymously();
       showSuccessMessage(context, resp["message"]);
       await Future.delayed(const Duration(seconds: 3), (){});
       final prefs = new Preferences();

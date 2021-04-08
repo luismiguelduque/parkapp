@@ -1,16 +1,18 @@
 
 import 'package:flutter/material.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:parkapp/models/neighborhood_model.dart';
-import 'package:parkapp/models/place_model.dart';
-import 'package:parkapp/providers/places_provider.dart';
-import 'package:parkapp/utils/app_theme.dart';
-import 'package:parkapp/utils/constants.dart';
-import 'package:parkapp/utils/functions.dart';
-import 'package:parkapp/widgets/custom_general_button.dart';
-import 'package:parkapp/widgets/custom_map_widget.dart';
-import 'package:parkapp/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
+
+import '../../../models/neighborhood_model.dart';
+import '../../../models/place_model.dart';
+import '../../../providers/places_provider.dart';
+import '../../../utils/app_theme.dart';
+import '../../../utils/constants.dart';
+import '../../../utils/functions.dart';
+import '../../../widgets/custom_general_button.dart';
+import '../../../widgets/custom_map_widget.dart';
+import '../../../widgets/custom_textfield.dart';
 
 class SettingsPlacesForm extends StatefulWidget {
   SettingsPlacesForm({Key key}) : super(key: key);

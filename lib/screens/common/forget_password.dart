@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:parkapp/utils/constants.dart';
 import 'package:parkapp/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../utils/app_theme.dart';
 import '../../utils/functions.dart';
@@ -22,7 +21,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   bool _isSaving = false;
   String _email;
   bool _showMessage = false;
-  //final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {

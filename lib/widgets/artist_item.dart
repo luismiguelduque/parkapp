@@ -1,5 +1,6 @@
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkapp/models/conversation_model.dart';
 import 'package:parkapp/providers/chat_provider.dart';
 import 'package:parkapp/utils/preferences.dart';
@@ -160,13 +161,11 @@ Widget _adminOptions(){
                       artistsProvider.getArtistsSuspensions(null, _offset, _limit),
                       chatProvider.updateLastMessage(conversation.id, "¡Gracias por registrarte como artista! Para que el perfil de artista sea activado...", _preferences.userId, conversation.user.id),
                     ]);
-                    /*
-                    Firestore.instance.collection('conversations').document("${conversation.conversationId}").collection("messages").add({
+                    FirebaseFirestore.instance.collection('conversations').doc("${conversation.conversationId}").collection("messages").add({
                       'text': _messageText,
                       'created_at': Timestamp.now(),
                       'is_admin': _preferences.userTypeId == 3,
                     });
-                    */
                   }else{ 
                     showErrorMessage(context, resp["message"]);
                   }
@@ -287,13 +286,11 @@ Widget _adminOptions(){
                               artistsProvider.getArtistsSuspensions(null, _offset, _limit),
                               chatProvider.updateLastMessage(conversation.id, "¡Gracias por registrarte como artista! Para que el perfil de artista sea activado...", _preferences.userId, conversation.user.id),
                             ]);
-                            /*
-                            Firestore.instance.collection('conversations').document("${conversation.conversationId}").collection("messages").add({
+                            FirebaseFirestore.instance.collection('conversations').doc("${conversation.conversationId}").collection("messages").add({
                               'text': _messageText,
                               'created_at': Timestamp.now(),
                               'is_admin': _preferences.userTypeId == 3,
                             });
-                            */
                           }else{ 
                             showErrorMessage(context, resp["message"]);
                           }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/conversation_model.dart';
 import './../utils/constants.dart';
@@ -73,9 +73,9 @@ class _NewMessageState extends State<NewMessage> {
         _isSaving = true;
       });
       if(widget.conversation.conversationId == ""  || widget.conversation.conversationId == null){
-        /*
-        DocumentReference docRef = await Firestore.instance.collection('conversations').add({"user_id": _preferences.userId});
-        final conversationId = docRef.documentID;
+        
+        DocumentReference docRef = await FirebaseFirestore.instance.collection('conversations').add({"user_id": _preferences.userId});
+        final conversationId = docRef.id;
         docRef.collection("messages").add({
           'text': _messajeText,
           'created_at': Timestamp.now(),
@@ -85,16 +85,16 @@ class _NewMessageState extends State<NewMessage> {
         final data = await chatProvider.storeConversation(conversationId);
         await chatProvider.updateLastMessage(data['id'], _messajeText, _preferences.userId, _preferences.userTypeId == 3 ? widget.conversation.user.id : null);
         await chatProvider.getUserConversation();
-        */
+        
       }else{
         FocusScope.of(context).unfocus();
-        /*
-        Firestore.instance.collection('conversations').document("${widget.conversation.conversationId}").collection("messages").add({
+        
+        FirebaseFirestore.instance.collection('conversations').doc("${widget.conversation.conversationId}").collection("messages").add({
           'text': _messajeText,
           'created_at': Timestamp.now(),
           'is_admin': _preferences.userTypeId == 3,
         });
-        */
+        
         await chatProvider.updateLastMessage(widget.conversation.id, _messajeText, _preferences.userId, _preferences.userTypeId == 3 ? widget.conversation.user.id : null);
       }
       

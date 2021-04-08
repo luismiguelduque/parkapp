@@ -192,7 +192,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logIn(String email, String password) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/login", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/login", {});
     try {
       final response = await http.post(
         uri,
@@ -203,8 +203,15 @@ class AuthProvider with ChangeNotifier {
         }),
       ); 
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      print(decodedResponse);
+      print("-------------------");
+      print(decodedResponse['success']);
+      print("------------------- +++++");
+      print(decodedResponse.containsKey('token'));
       if (decodedResponse['success'] && decodedResponse.containsKey('token')) {
+        print("------------------- +++++ -----");
         setPreferences(decodedResponse);
+        print("------------------- +++++ ----- 14");
         respJson['success'] = true;
         respJson['message'] = 'Bienvenido de vuelta';
       } else {
@@ -311,6 +318,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   void setPreferences(Map<String, dynamic> decodedResponse){
+    
     if(decodedResponse != null){
       _preferences.token = decodedResponse['token'];
       _preferences.expireToken = decodedResponse['expires_in'];

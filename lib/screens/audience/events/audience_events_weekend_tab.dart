@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:parkapp/providers/events_provider.dart';
-import 'package:parkapp/utils/constants.dart';
-import 'package:parkapp/widgets/empty_list.dart';
-import 'package:parkapp/widgets/event_item.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../../providers/events_provider.dart';
+import '../../../utils/constants.dart';
+import '../../../widgets/empty_list.dart';
+import '../../../widgets/event_item.dart';
 import '../../../utils/app_theme.dart';
 
 class AudienceEventsWeekendTab extends StatefulWidget {
