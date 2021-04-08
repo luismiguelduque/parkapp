@@ -95,7 +95,7 @@ class EventsProvider extends ChangeNotifier {
   int adminEventsComplaintsTotal = 0;
   
   Future<void> getArtistEvents() async {
-    final Uri uri = Uri.https(apiUrl, "/events/artist/${_preferences.artistId}", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/artist/${_preferences.artistId}", {});
     try {
       final response = await http.get(
         uri, 
@@ -123,7 +123,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAudienceEventsClose() async {
-    final Uri uri = Uri.https(apiUrl, "/events/audience/close", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/audience/close", {});
     try {
       final response = await http.get(
         uri, 
@@ -153,7 +153,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAudienceEventsNow() async {
-    final Uri uri = Uri.https(apiUrl, "/events/audience/now", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/audience/now", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -180,7 +180,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAudienceEventsWeekend() async {
-    final Uri uri = Uri.https(apiUrl, "/events/audience/weekend", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/audience/weekend", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -210,19 +210,19 @@ class EventsProvider extends ChangeNotifier {
     if(fromTime != null) fromTime = "${fromTime.hour}:${fromTime.minute}";
     if(toTime != null) toTime = "${toTime.hour}:${toTime.minute}";
     //var url = "$apiUrl/events/audience/all?offset=$offset&limit=$limit&fromDate=$fromDate&toDate=$toDate&fromTime=$fromTime&toTime=$toTime&neighborhoods=$neighborhoods&artists=$artists&rating=$rating&categories=$categories&distance=$distance";
-    final Uri uri = Uri.https(apiUrl, "/artists", {
-      "search": search,
-      "offset": offset,
-      "limit": limit,
-      "fromDate": fromDate,
-      "toDate": toDate,
-      "fromTime": fromTime,
-      "toTime": toTime,
-      "neighborhoods": neighborhoods,
-      "artists": artists,
-      "rating": rating,
-      "categories": categories,
-      "distance": distance
+    final Uri uri = Uri.https(apiUrl, "api/artists", {
+      "search": "$search",
+      "offset": "$offset",
+      "limit": "$limit",
+      "fromDate": "$fromDate",
+      "toDate": "$toDate",
+      "fromTime": "$fromTime",
+      "toTime": "$toTime",
+      "neighborhoods": "$neighborhoods",
+      "artists": "$artists",
+      "rating": "$rating",
+      "categories": "$categories",
+      "distance": "$distance"
     });
     try {
       final response = await http.get(
@@ -257,17 +257,20 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAdminEventsAll({int offset, int limit, String search}) async {
-    final Uri uri = Uri.https(apiUrl, "/events/admin", {
-      "search": search,
-      "offset": offset,
-      "limit": limit
-    });
     try {
-      final response = await http.get(uri, headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${_preferences.token}',
+      final uri = Uri.https(apiUrl, 'api/events/admin', {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit"
       });
+      final response = await http.get(
+        uri, 
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${_preferences.token}',
+        }
+      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -295,18 +298,21 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAdminEventsPending({int offset, int limit, String search}) async {
-    final Uri uri = Uri.https(apiUrl, "/events/admin", {
-      "search": search,
-      "offset": offset,
-      "limit": limit,
-      "pending": true,
-    });
     try {
-      final response = await http.get(uri, headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${_preferences.token}',
+      final Uri uri = Uri.https(apiUrl, "api/events/admin", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit",
+        "pending": "true",
       });
+      final response = await http.get(
+        uri, 
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${_preferences.token}',
+        }
+      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -334,18 +340,22 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getAdminEventsComplained({int offset, int limit, String search}) async {
-    final Uri uri = Uri.https(apiUrl, "/events/admin", {
-      "search": search,
-      "offset": offset,
-      "limit": limit,
-      "denounced": true,
-    });
+    
     try {
-      final response = await http.get(uri, headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${_preferences.token}',
+      final Uri uri = Uri.https(apiUrl, "api/events/admin", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit",
+        "denounced": "true",
       });
+      final response = await http.get(
+        uri, 
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${_preferences.token}',
+        }
+      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -373,7 +383,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getEventDetail(int id) async {
-    final Uri uri = Uri.https(apiUrl, "/events/$id", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/$id", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -528,7 +538,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> deleteEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/$eventId", {});
     try {
       final response = await http.delete(uri, headers: {
         'Content-type': 'application/json',
@@ -564,7 +574,7 @@ class EventsProvider extends ChangeNotifier {
   
   Future<Map<String, dynamic>> deleteEventImage(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/delete-image/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/delete-image/$eventId", {});
     try {
       final response = await http.delete(uri, headers: {
         'Content-type': 'application/json',
@@ -600,7 +610,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> publicateEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/publicate/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/publicate/$eventId", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -636,7 +646,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> scheduleEvent(int eventId, int userId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/schedule", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/schedule", {});
     try {
       final response = await http.post(
         uri, 
@@ -679,7 +689,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> unScheduleEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/cancel-schedule", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/cancel-schedule", {});
     try {
       final response = await http.post(
         uri, 
@@ -720,7 +730,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getUserSheduledEvent() async {
-    final Uri uri = Uri.https(apiUrl, "/users/sheduled-events", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/sheduled-events", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -747,7 +757,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> blockEvent(int eventId) async {
-    final Uri uri = Uri.https(apiUrl, "/events/block/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/block/$eventId", {});
     Map<String, dynamic> respJson = {};
     try {
       final response = await http.put(
@@ -787,7 +797,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> rateEvent(int eventId, String observation, double rating) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/add-user-rating", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/add-user-rating", {});
     try {
       final response = await http.post(
         uri, 
@@ -831,7 +841,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> reportEvent(int eventId, String reason) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/complaints/events", {});
+    final Uri uri = Uri.https(apiUrl, "api/complaints/events", {});
     try {
       final response = await http.post(
         uri, 
@@ -874,7 +884,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> unBlockEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/unblock/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/unblock/$eventId", {});
     try {
       final response = await http.put(
         uri, 
@@ -913,7 +923,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> storeEventCategory(String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/publicate", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/publicate", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -949,7 +959,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> deleteCategoryEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/$eventId", {});
     try {
       final response = await http.delete(uri, headers: {
         'Content-type': 'application/json',
@@ -985,7 +995,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> updateCategoryEvent(int eventId, String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/block/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/block/$eventId", {});
     try {
       final response = await http.put(
         uri, 
@@ -1024,7 +1034,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> activateEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/activate/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/activate/$eventId", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -1060,7 +1070,7 @@ class EventsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> rejectEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/events/reject/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/events/reject/$eventId", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',

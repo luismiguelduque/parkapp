@@ -37,11 +37,12 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> getAdminAllConversation() async {
-    final Uri uri = Uri.https(apiUrl, "/conversations", {
-      "offset": 0,
-      "limit": 1000
-    });
+    
     try {
+      final Uri uri = Uri.https(apiUrl, "api/conversations", {
+        "offset": "0",
+        "limit": "1000"
+      });
       final response = await http.get(
         uri, 
         headers: {
@@ -57,7 +58,6 @@ class ChatProvider extends ChangeNotifier {
       List conversations = extractedData['data'];
       final List<ConversationModel> tempItems = [];
       adminConversationsArtistTotal = extractedData['total'];
-      
       conversations.forEach((element) {
         tempItems.add(ConversationModel.fromJson(element));
       });
@@ -71,13 +71,14 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> getAdminConversation(String search, int offset, int limit, int userType) async {
-    final Uri uri = Uri.https(apiUrl, "/conversations", {
-      "search": search,
-      "offset": offset,
-      "limit": limit,
-      "user_type": userType
-    });
+    
     try {
+      final Uri uri = Uri.https(apiUrl, "api/conversations", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit",
+        "user_type": "$userType"
+      });
       final response = await http.get(
         uri, 
         headers: {
@@ -125,7 +126,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> getUserConversation() async {
-    final Uri uri = Uri.https(apiUrl, "/conversations/user-session", {});
+    final Uri uri = Uri.https(apiUrl, "api/conversations/user-session", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -154,7 +155,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> storeConversation(String conversationId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/conversations", {});
+    final Uri uri = Uri.https(apiUrl, "api/conversations", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -196,7 +197,7 @@ class ChatProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> updateLastMessage(int conversationId, String message, int sender, int receiver) async {
     Map<String, dynamic> respJson = {};
     final bool isAdmin = _preferences.userTypeId == 3;
-    final Uri uri = Uri.https(apiUrl, "/conversations/last-message", {});
+    final Uri uri = Uri.https(apiUrl, "api/conversations/last-message", {});
     try {
       final response = await http.post(
         uri, 
@@ -241,7 +242,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> setRead(int conversationId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/conversations/read-messages?id=$conversationId", {});
+    final Uri uri = Uri.https(apiUrl, "api/conversations/read-messages?id=$conversationId", {});
     try {
       final response = await http.get(
         uri, 

@@ -27,7 +27,7 @@ class UsersProvider extends ChangeNotifier {
   }
 
   Future<void> getUserEventsLikes() async {
-    final Uri uri = Uri.https(apiUrl, "/users/events-likes", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/events-likes", {});
     try {
       final response = await http.get(
         uri, 
@@ -54,7 +54,7 @@ class UsersProvider extends ChangeNotifier {
   
   Future<Map<String, dynamic>> changeDataUser(int userId, String name) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/users/$userId", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/$userId", {});
     try {
       final response = await http.put(
         uri, 
@@ -94,7 +94,7 @@ class UsersProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> setUserLocation(String lat, String long) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/users/set-location", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/set-location", {});
     try {
       final response = await http.put(
         uri, 
@@ -134,7 +134,7 @@ class UsersProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> setUserFCM(String key) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/users/set-fcm", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/set-fcm", {});
     try {
       final response = await http.put(
         uri, 

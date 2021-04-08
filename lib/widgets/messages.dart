@@ -30,7 +30,7 @@ class Messages extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        final chatDocs = chatSnapshot.data.documents;
+        final chatDocs = chatSnapshot.data.docs;
         return ListView.builder(
           reverse: true,
           itemCount: chatDocs.length,
@@ -45,7 +45,7 @@ class Messages extends StatelessWidget {
               message: chatDocs[index]['text'],
               createdAt: chatDocs[index]['created_at'].toDate(),
               isMe: isMe,
-              key: ValueKey(chatDocs[index].documentID),
+              key: ValueKey(chatDocs[index].id),
             );
           },
         );

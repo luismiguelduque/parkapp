@@ -59,9 +59,9 @@ class _AdminArtistsRequestsTabState extends State<AdminArtistsRequestsTab> {
           return RefreshIndicator(
             onRefresh: () async {
               await Future.wait([
-                artistsProvider.getArtists(null, _offset, _limit),
-                artistsProvider.getArtistsRequests(null, _offset, _limit),
-                artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
               ]);
             },
             child: NotificationListener<ScrollNotification>(
@@ -93,7 +93,7 @@ class _AdminArtistsRequestsTabState extends State<AdminArtistsRequestsTab> {
     _limit+=20;
     final eventsProvider = Provider.of<ArtistsProvider>(context, listen: false);
     await Future.wait([
-      eventsProvider.getArtistsRequests(null, _offset, _limit,),
+      eventsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
     ]);
     _isLoadingPagination = false;
   }

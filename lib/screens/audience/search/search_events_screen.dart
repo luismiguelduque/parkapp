@@ -55,7 +55,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
       final artistProvider = Provider.of<ArtistsProvider>(context, listen: false);
       await Future.wait([
-        artistProvider.getArtists(null, 0, 30),
+        artistProvider.getArtists(search: null, limit: 150, offset: 0),
         placesProvider.getNeighborhoods(),
         categoriesProvider.getEventCategory(),
         eventsProvider.getAudienceEventsAll(

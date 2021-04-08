@@ -170,13 +170,13 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
 
 
-  Future<void> getArtists(String search, int offset, int limit,) async {
-    final Uri uri = Uri.https(apiUrl, "/artists", {
-      "search": search,
-      "offset": offset,
-      "limit": limit
-    });
+  Future<void> getArtists({String search, int offset, int limit}) async {
     try {
+      final Uri uri = Uri.https(apiUrl, "api/artists", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit"
+      });
       final response = await http.get(
         uri, 
         headers: {
@@ -186,6 +186,8 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
         }
       );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      print("getArtists -------");
+      print(extractedData);
       if (extractedData == null) {
         return;
       }
@@ -210,12 +212,12 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
 
   Future<void> getArtistsAudience(String search, int offset, int limit,) async {
-    final Uri uri = Uri.https(apiUrl, "/artists-audience", {
-      "search": search,
-      "offset": offset,
-      "limit": limit
-    });
     try {
+      final Uri uri = Uri.https(apiUrl, "api/artists-audience", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit"
+      });
       final response = await http.get(
         uri,
         headers: {
@@ -250,13 +252,13 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
     }
   }
 
-  Future<void> getArtistsRequests(String search, int offset, int limit,) async {
-    final Uri uri = Uri.https(apiUrl, "/artists/requests", {
-      "search": search,
-      "offset": offset,
-      "limit": limit
-    });
+  Future<void> getArtistsRequests({String search, int offset, int limit}) async {
     try {
+      final Uri uri = Uri.https(apiUrl, "api/artists/requests", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit"
+      });
       final response = await http.get(
         uri, 
         headers: {
@@ -289,11 +291,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
     }
   }
 
-  Future<void> getArtistsSuspensions(String search, int offset, int limit,) async {
-    final Uri uri = Uri.https(apiUrl, "/artists/suspensions", {
-      "search": search,
-    });
+  Future<void> getArtistsSuspensions({String search, int offset, int limit}) async {
     try {
+      final Uri uri = Uri.https(apiUrl, "api/artists/suspensions", {
+        "search": "$search",
+      });
       final response = await http.get(
         uri, 
         headers: {
@@ -328,7 +330,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> activateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "artists/activate/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "apiartists/activate/$artistId", {});
     try {
       final response = await http.post(
         uri, 
@@ -365,7 +367,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> rejectArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/reject/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/reject/$artistId", {});
     try {
       final response = await http.post(
         uri, 
@@ -401,7 +403,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
 
   Future<void> getArtistDetail(int id) async {
-    final Uri uri = Uri.https(apiUrl, "/artists/$id", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/$id", {});
     try {
       final response = await http.get(
         uri, 
@@ -424,7 +426,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
   
   Future<void> getArtistIndicators() async {
-    final Uri uri = Uri.https(apiUrl, "/indicators/artists", {});
+    final Uri uri = Uri.https(apiUrl, "api/indicators/artists", {});
     try {
       final response = await http.get(
         uri, 
@@ -448,7 +450,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> suspendArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/suspend/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/suspend/$artistId", {});
     try {
       final response = await http.put(
         uri, 
@@ -484,7 +486,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> reactivateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/reactivate/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/reactivate/$artistId", {});
     try {
       final response = await http.put(
         uri, 
@@ -520,7 +522,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> deleteArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/delete/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/delete/$artistId", {});
     try {
       final response = await http.delete(
         uri, 
@@ -556,7 +558,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> reportArtist(int eventId, String reason) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists_complaint", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists_complaint", {});
     try {
       final response = await http.post(
         uri, 
@@ -597,7 +599,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> followArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/follow", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/follow", {});
     try {
       final response = await http.post(
         uri, 
@@ -636,7 +638,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> unFollowArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/unfollow", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/unfollow", {});
     try {
       final response = await http.post(
         uri, 
@@ -675,7 +677,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> rateArtist(int artistId, String observation, double rating) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artists/add-user-rating", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/add-user-rating", {});
     try {
       final response = await http.post(
         uri, 

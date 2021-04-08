@@ -17,7 +17,7 @@ class CategoriesProvider extends ChangeNotifier {
   }
 
   Future<void> getEventCategory() async {
-    final Uri uri = Uri.https(apiUrl, "/categories", {});
+    final Uri uri = Uri.https(apiUrl, "api/categories", {});
     try {
       final response = await http.get(
         uri, 
@@ -46,7 +46,7 @@ class CategoriesProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> storeEventCategory(String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/categories", {});
+    final Uri uri = Uri.https(apiUrl, "api/categories", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -87,7 +87,7 @@ class CategoriesProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> deleteCategoryEvent(int eventId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/categories/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/categories/$eventId", {});
     try {
       final response = await http.delete(
         uri, 
@@ -126,7 +126,7 @@ class CategoriesProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> updateCategoryEvent(int eventId, String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/categories/$eventId", {});
+    final Uri uri = Uri.https(apiUrl, "api/categories/$eventId", {});
     try {
       final response = await http.put(
         uri, 

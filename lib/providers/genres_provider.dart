@@ -23,7 +23,7 @@ class GenresProvider extends ChangeNotifier {
   }
   
   Future<void> getArtisticGenres() async {
-    final Uri uri = Uri.https(apiUrl, "/artistic-genre", {});
+    final Uri uri = Uri.https(apiUrl, "api/artistic-genre", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -49,7 +49,7 @@ class GenresProvider extends ChangeNotifier {
   
   Future<Map<String, dynamic>> storeEventCatGenre(String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artistic-genre", {});
+    final Uri uri = Uri.https(apiUrl, "api/artistic-genre", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -90,7 +90,7 @@ class GenresProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> deleteCategoryGenre(int genreId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artistic-genre/$genreId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artistic-genre/$genreId", {});
     try {
       final response = await http.delete(uri, headers: {
         'Content-type': 'application/json',
@@ -126,7 +126,7 @@ class GenresProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> updateCategoryGenre(int genreId, String description) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/artistic-genre/$genreId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artistic-genre/$genreId", {});
     try {
       final response = await http.put(
         uri, 

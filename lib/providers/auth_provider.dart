@@ -22,7 +22,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> getUser() async {
-    final Uri uri = Uri.https(apiUrl, "/users/${_preferences.userId}", {});
+    final Uri uri = Uri.https(apiUrl, "api/users/${_preferences.userId}", {});
     try {
       final response = await http.get(
         uri, 
@@ -46,7 +46,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logInFacebook(String token) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/sign-in-with-facebook", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/sign-in-with-facebook", {});
     try {
       final response = await http.post(
         uri, 
@@ -89,7 +89,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logInInstagram(String token) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/sign-in-with-instagram", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/sign-in-with-instagram", {});
     try {
       final response = await http.post(
         uri, 
@@ -130,7 +130,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> changePassword(String currentPassword, String password, String repeatPassword) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/change-password", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/change-password", {});
     try {
       final response = await http.post(
         uri, 
@@ -164,7 +164,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> forgetPassword(String email) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/resset-password/$email", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/resset-password/$email", {});
     try {
       final response = await http.post(
         uri, 
@@ -233,7 +233,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> signUp(UserModel user) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/register", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/register", {});
     try{
       final response = await http.post(
         uri, 
@@ -274,7 +274,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logOut() async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "/auth/logout", {});
+    final Uri uri = Uri.https(apiUrl, "api/auth/logout", {});
     try{
       final response = await http.post(
         uri, 
@@ -309,19 +309,18 @@ class AuthProvider with ChangeNotifier {
       return respJson;
     }
   }
-
+ 
   void setPreferences(Map<String, dynamic> decodedResponse){
-    print("------------------");
-    print(decodedResponse);
     if(decodedResponse != null){
       _preferences.token = decodedResponse['token'];
-      _preferences.expireToken = decodedResponse['expires_in'];
-      _preferences.name = decodedResponse['user']['name'];
-      _preferences.email = decodedResponse['user']['email'];
-      _preferences.phone = decodedResponse['user']['phone'];
+      //_preferences.expireToken = decodedResponse['expires_in'];
+      _preferences.name = decodedResponse['user']['name'] ?? "";
+      _preferences.email = decodedResponse['user']['email'] ?? "";
+      _preferences.phone = decodedResponse['user']['phone'] ?? "";
       _preferences.userId = decodedResponse['user']['id'];
       _preferences.userTypeId= decodedResponse['user']['user_type']['id'];
       _preferences.userType = decodedResponse['user']['user_type']['name'];
+      
       if(decodedResponse['user']['province'] != null){
         _preferences.provinceId = decodedResponse['user']['province']['id'];
       }

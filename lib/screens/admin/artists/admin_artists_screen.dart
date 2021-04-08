@@ -32,9 +32,9 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
       await Future.wait([
-        artistsProvider.getArtists(null, _offset, _limit),
-        artistsProvider.getArtistsRequests(null, _offset, _limit),
-        artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+        artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+        artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+        artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
         chatProvider.getAdminAllConversation(),
       ]);
       setState(() {
@@ -88,9 +88,9 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                               _isLoadingSearch = true;
                             });
                             await Future.wait([
-                              artistsProvider.getArtists(value, _offset, _limit),
-                              artistsProvider.getArtistsRequests(value, _offset, _limit),
-                              artistsProvider.getArtistsSuspensions(value, _offset, _limit),
+                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: value),
+                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: value),
+                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: value),
                             ]);
                             setState(() { 
                               _isLoadingSearch = false;
@@ -106,9 +106,9 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                               _searchFilter = !_searchFilter;
                             });
                             await Future.wait([
-                              artistsProvider.getArtists(null, _offset, _limit),
-                              artistsProvider.getArtistsRequests(null, _offset, _limit),
-                              artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                             ]);
                             if(this.mounted) {
                               setState(() { _isLoadingSearch = false; });

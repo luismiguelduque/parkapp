@@ -156,9 +156,9 @@ Widget _adminOptions(){
                   if (resp['success']) {
                     showSuccessMessage(context, resp["message"]);
                     await Future.wait([
-                      artistsProvider.getArtists(null, _offset, _limit),
-                      artistsProvider.getArtistsRequests(null, _offset, _limit),
-                      artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                      artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                      artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                      artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                       chatProvider.updateLastMessage(conversation.id, "¡Gracias por registrarte como artista! Para que el perfil de artista sea activado...", _preferences.userId, conversation.user.id),
                     ]);
                     FirebaseFirestore.instance.collection('conversations').doc("${conversation.conversationId}").collection("messages").add({
@@ -186,9 +186,9 @@ Widget _adminOptions(){
                   if (resp['success']) {
                     showSuccessMessage(context, resp["message"]);
                     await Future.wait([
-                      artistsProvider.getArtists(null, _offset, _limit),
-                      artistsProvider.getArtistsRequests(null, _offset, _limit),
-                      artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                      artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                      artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                      artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                     ]);
                   }else{ 
                     showErrorMessage(context, resp["message"]);
@@ -212,9 +212,9 @@ Widget _adminOptions(){
                       if (resp['success']) {
                         showSuccessMessage(context, resp["message"]);
                         await Future.wait([
-                          artistsProvider.getArtists(null, _offset, _limit),
-                          artistsProvider.getArtistsRequests(null, _offset, _limit),
-                          artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                          artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                          artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                          artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                         ]);
                       }else{ 
                         showErrorMessage(context, resp["message"]);
@@ -256,9 +256,9 @@ Widget _adminOptions(){
                           if (resp['success']) {
                             showSuccessMessage(context, resp["message"]);
                             await Future.wait([
-                              artistsProvider.getArtists(null, _offset, _limit),
-                              artistsProvider.getArtistsRequests(null, _offset, _limit),
-                              artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                             ]);
                           }else{ 
                             showErrorMessage(context, resp["message"]);
@@ -281,9 +281,9 @@ Widget _adminOptions(){
                           if (resp['success']) {
                             showSuccessMessage(context, resp["message"]);
                             await Future.wait([
-                              artistsProvider.getArtists(null, _offset, _limit),
-                              artistsProvider.getArtistsRequests(null, _offset, _limit),
-                              artistsProvider.getArtistsSuspensions(null, _offset, _limit),
+                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                               chatProvider.updateLastMessage(conversation.id, "¡Gracias por registrarte como artista! Para que el perfil de artista sea activado...", _preferences.userId, conversation.user.id),
                             ]);
                             FirebaseFirestore.instance.collection('conversations').doc("${conversation.conversationId}").collection("messages").add({
@@ -353,9 +353,9 @@ Widget _adminOptions(){
                                 if (resp['success']) {
                                   showSuccessMessage(context, resp["message"]);
                                   await Future.wait([
-                                    Provider.of<ArtistsProvider>(context, listen: false).getArtists(null, _offset, _limit),
-                                    Provider.of<ArtistsProvider>(context, listen: false).getArtistsRequests(null, _offset, _limit),
-                                    Provider.of<ArtistsProvider>(context, listen: false).getArtistsSuspensions(null, _offset, _limit),
+                                    Provider.of<ArtistsProvider>(context, listen: false).getArtists(limit: _limit, offset: _offset, search: null),
+                                    Provider.of<ArtistsProvider>(context, listen: false).getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                                    Provider.of<ArtistsProvider>(context, listen: false).getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                                   ]);
                                   Navigator.of(context).pushNamed("admin-artists");
                                 }else{ 
