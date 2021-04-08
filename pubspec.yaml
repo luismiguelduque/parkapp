@@ -36,12 +36,14 @@ dependencies:
   flutter_open_whatsapp: ^0.1.2
   flutter_rating_bar: ^4.0.0
   smooth_star_rating: ^1.1.1
-  flutter_page_indicators: ^0.0.1
   location_permissions: ^3.0.0+1
   url_launcher: ^6.0.3
   date_format: ^2.0.2
   geolocator: ^7.0.1
+  intl: ^0.17.0
   google_maps_flutter: ^2.0.3
+  flutter_page_indicators: ^0.0.1
+  
   #firebase_auth: ^1.0.2
   #firebase_messaging: ^9.1.1
   #cloud_firestore: ^1.0.4
