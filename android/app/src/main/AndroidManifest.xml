@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.parkapp.app.parkapp.parkapp">
+    package="com.parkapp.app.parkapp">
    <application
-        android:label="parkapp"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Park App"
+        android:icon="@mipmap/launcher_icon"
+        android:allowBackup = "false">
         <activity
+            android:requestLegacyExternalStorage="true"
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -37,5 +39,12 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDjMLLsEOu0YNxDRMeQSjmZ9SuutFJuX1E"/>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 </manifest>

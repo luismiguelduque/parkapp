@@ -203,15 +203,8 @@ class AuthProvider with ChangeNotifier {
         }),
       ); 
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
-      print(decodedResponse);
-      print("-------------------");
-      print(decodedResponse['success']);
-      print("------------------- +++++");
-      print(decodedResponse.containsKey('token'));
       if (decodedResponse['success'] && decodedResponse.containsKey('token')) {
-        print("------------------- +++++ -----");
         setPreferences(decodedResponse);
-        print("------------------- +++++ ----- 14");
         respJson['success'] = true;
         respJson['message'] = 'Bienvenido de vuelta';
       } else {
@@ -318,7 +311,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   void setPreferences(Map<String, dynamic> decodedResponse){
-    
+    print("------------------");
+    print(decodedResponse);
     if(decodedResponse != null){
       _preferences.token = decodedResponse['token'];
       _preferences.expireToken = decodedResponse['expires_in'];
