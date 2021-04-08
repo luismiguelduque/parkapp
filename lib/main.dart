@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 //import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 
@@ -50,6 +51,7 @@ import 'screens/common/alert_gps.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new Preferences();
+  await Firebase.initializeApp();
   await prefs.initPrefs();
   runApp(MyApp());
 }

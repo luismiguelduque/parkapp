@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-//import 'package:flushbar/flushbar.dart';
-//import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flushbar/flushbar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/chat_provider.dart';
@@ -38,34 +38,38 @@ class _CustomBottomMenuState extends State<CustomBottomMenu> {
   @override
   void initState() { 
     super.initState();
-    /*
-    final fbm = FirebaseMessaging();
-    fbm.requestNotificationPermissions();
-    fbm.configure(
-      onMessage: (msg){
-        Flushbar(
-          title:  msg['notification']["title"],
-          message:  msg['notification']["body"],
-          duration:  Duration(seconds: 3),
-          onTap: (data){
-            notificationGo(msg);
-          },             
-        )..show(context);
-        if(_preferences.userType == 3 && msg['data']["type"] == "NEW_MESSAGE"){
-          Provider.of<ChatProvider>(context, listen: false).getAdminAllConversation();
-        }
-        return;
-      },
-      onLaunch: (msg){
-        notificationGo(msg);
-        return;
-      },
-      onResume: (msg){
-        notificationGo(msg);
-        return;
-      }
+    FirebaseMessaging fbm = FirebaseMessaging.instance;
+    fbm.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
     );
-    */
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      Flushbar(
+        title:  message.notification.title,
+        message:  message.notification.body,
+        duration:  Duration(seconds: 3),
+        onTap: (data){
+          notificationGo(message);
+        },             
+      )..show(context); 
+      if(_preferences.userType == 3 && message.data["type"] == "NEW_MESSAGE"){
+        Provider.of<ChatProvider>(context, listen: false).getAdminAllConversation();
+      }
+      return;
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      notificationGo(message);
+      return;
+    });
+    FirebaseMessaging.onBackgroundMessage((message) {
+      notificationGo(message);
+      return;
+    });
   }
 
   void notificationGo(msg){

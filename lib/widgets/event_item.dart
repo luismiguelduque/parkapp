@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parkapp/utils/preferences.dart';
 
+import 'package:parkapp/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constants.dart';

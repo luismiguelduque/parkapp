@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-//import 'package:flutter_page_indicator/flutter_page_indicator.dart';
+import 'package:flutter_page_indicators/flutter_page_indicators.dart';
 import 'package:parkapp/utils/app_theme.dart';
 import 'package:parkapp/widgets/custom_general_button.dart';
 
@@ -73,7 +73,6 @@ class _WellcomeState extends State<Wellcome> {
                 width: size.width,
                 child: Column(
                   children: [
-                    /*
                     PageIndicator(
                       layout: PageIndicatorLayout.WARM,
                       size: 15.0,
@@ -83,7 +82,6 @@ class _WellcomeState extends State<Wellcome> {
                       color: AppTheme.getTheme().dividerColor,
                       activeColor: AppTheme.getTheme().primaryColor,
                     ),
-                    */
                     SizedBox(height: 20,),
                     CustomGeneralButton(
                       onPressed: (){

@@ -6,7 +6,7 @@ import 'package:location_permissions/location_permissions.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:date_format/date_format.dart';
 import 'package:geolocator/geolocator.dart';
-//import 'package:flushbar/flushbar.dart';
+import 'package:flushbar/flushbar.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
 import '../utils/preferences.dart';
@@ -50,36 +50,36 @@ bool validateEmail(String email) {
 }
 
 showErrorMessage(BuildContext context, message){
-  /*
+  
   Flushbar(
     title:  "¡Atención!",
     message:  message,
     duration:  Duration(seconds: 8),
     backgroundColor: redColor.withOpacity(0.7),
   )..show(context);
-  */
+  
 }
 
 showWarningMessage(BuildContext context, message){
-  /*
+  
   Flushbar(
     title:  "¡Atención!",
     message:  message,
     duration:  Duration(seconds: 8),
     backgroundColor: redColor.withOpacity(0.7),
   )..show(context);
-  */
+  
 }
 
 showSuccessMessage(BuildContext context, message){
-  /*
+  
   Flushbar(
     title:  "¡Fantástico!",
     message:  message,
     duration:  Duration(seconds: 8),
     backgroundColor: greenColor.withOpacity(0.7),
   )..show(context);
-  */
+  
 }
 
 logOutConfirmation(BuildContext context) {
