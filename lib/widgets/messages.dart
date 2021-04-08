@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-//import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/preferences.dart';
 import './message_bubble.dart';
 
@@ -16,10 +15,10 @@ class Messages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder(
-      /*
-      stream: Firestore.instance
-          .collection('conversations').document("$conversationId").collection("messages")
+      stream: FirebaseFirestore.instance
+          .collection('conversations').doc("$conversationId").collection("messages")
           .orderBy(
             'created_at',
             descending: true,
@@ -51,8 +50,6 @@ class Messages extends StatelessWidget {
           },
         );
       }
-      */
     );
-    
   }
 }

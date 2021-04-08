@@ -45,8 +45,7 @@ dependencies:
   flutter_page_indicators: ^0.0.1
   firebase_auth: ^1.0.2
   firebase_messaging: ^9.1.1
-  
-  #cloud_firestore: ^1.0.4
+  cloud_firestore: ^1.0.4
   
 
 dev_dependencies:
