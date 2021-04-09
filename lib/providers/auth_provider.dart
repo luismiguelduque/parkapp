@@ -21,6 +21,12 @@ class AuthProvider with ChangeNotifier {
     return _user;
   }
 
+  bool conneted = true;
+  void setConneted(bool value){
+    conneted = value;
+    notifyListeners();
+  }
+
   Future<void> getUser() async {
     final Uri uri = Uri.https(apiUrl, "api/users/${_preferences.userId}", {});
     try {
@@ -340,15 +346,15 @@ class AuthProvider with ChangeNotifier {
         _preferences.artistPhoto = decodedResponse['user']['artist']['profile_image'];
       }
     }else{
-      _preferences.token = null;
-      _preferences.expireToken = null;
-      _preferences.name = null;
-      _preferences.email = null;
-      _preferences.phone = null;
-      _preferences.userId = null;
-      _preferences.provinceId = null;
-      _preferences.cityId = null;
-      _preferences.neighborhoodId = null;
+      _preferences.token = "";
+      _preferences.expireToken = 0;
+      _preferences.name = "";
+      _preferences.email = "";
+      _preferences.phone = "";
+      _preferences.userId = 0;
+      _preferences.provinceId = 0;
+      _preferences.cityId = 0;
+      _preferences.neighborhoodId = 0;
     }
   }
 

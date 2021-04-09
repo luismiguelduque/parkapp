@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
+import 'package:parkapp/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:location_permissions/location_permissions.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -8,6 +9,7 @@ import 'package:date_format/date_format.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flushbar/flushbar.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
+import 'package:connectivity/connectivity.dart';
 
 import '../utils/preferences.dart';
 import '../providers/auth_provider.dart';
@@ -84,6 +86,7 @@ showSuccessMessage(BuildContext context, message){
 
 logOutConfirmation(BuildContext context) {
   final size = MediaQuery.of(context).size;
+  bool loading = false;
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -113,12 +116,19 @@ logOutConfirmation(BuildContext context) {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           CustomGeneralButton(
+                            loading: loading,
                             text: "Si",
                             color: AppTheme.getTheme().colorScheme.surface,
                             textStyle: title3,
                             width: size.width*0.3,
-                            onPressed: () async {
-                              await Provider.of<AuthProvider>(context, listen: false).logOut();
+                            onPressed: () async { 
+                              setState(() { loading = true; });
+                              await Future.wait([
+                                Provider.of<UsersProvider>(context, listen: false).setUserFCM(null),
+                                Provider.of<AuthProvider>(context, listen: false).logOut(),
+                              ]);
+                              Provider.of<AuthProvider>(context, listen: false).setPreferences(null);
+                              setState(() { loading = false; });
                               Navigator.of(context).pushReplacementNamed("wellcome");
                             }, 
                           ),
@@ -206,3 +216,16 @@ Future loginWithFacebook(BuildContext context) async {
   }
 }
 */
+
+Future<bool> check(BuildContext context) async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile) {
+    Provider.of<AuthProvider>(context, listen: false).setConneted(true);
+    return true;
+  } else if (connectivityResult == ConnectivityResult.wifi) {
+    Provider.of<AuthProvider>(context, listen: false).setConneted(true);
+    return true;
+  }
+  Provider.of<AuthProvider>(context, listen: false).setConneted(false);
+  return false;
+}

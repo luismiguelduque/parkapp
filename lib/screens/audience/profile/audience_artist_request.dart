@@ -123,7 +123,7 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
                             height: 55,
                             label: "Nombre de perfil público",
                             verticalMargin: 5,
-                            maxLength: 75,
+                            maxLength: 100,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Este campo es requerido';
@@ -140,7 +140,7 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
                             height: 100,
                             label: "Descripción",
                             verticalMargin: 5,
-                            maxLength: 160,
+                            maxLength: 250,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Este campo es requerido';
@@ -187,7 +187,7 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
                             height: 55,
                             label: "URL video (Opcional)",
                             verticalMargin: 8,
-                            maxLength: 75,
+                            maxLength: 150,
                             onChanged: (value){
                               _tempArtist.urlVideo = value;
                             },

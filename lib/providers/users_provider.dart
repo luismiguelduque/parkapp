@@ -148,6 +148,9 @@ class UsersProvider extends ChangeNotifier {
         }),
       );
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      print("setUserFCM --------");
+      print(key);
+      print(decodedResponse);
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
@@ -165,6 +168,7 @@ class UsersProvider extends ChangeNotifier {
       }
       return respJson;
     }catch(error){
+      print(error);
       respJson['success'] = false;
       respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;

@@ -165,6 +165,7 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                     }
                                     return null;
                                   },
+                                  maxLength: 100,
                                   height: 55,
                                   verticalMargin: 8,
                                   value: _tempEvent.name,
@@ -178,6 +179,7 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                   maxLines: 3,
                                   height: 100,
                                   label: "Descripción",
+                                  maxLength: 250,
                                   verticalMargin: 8,
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -200,6 +202,7 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                   height: 100,
                                   label: "Comentarios sobre el lugar (Opcional)",
                                   verticalMargin: 8,
+                                  maxLength: 250,
                                   onChanged: (value){
                                     _tempEvent.placeComments = value;
                                   },
@@ -269,6 +272,7 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                   height: 55,
                                   label: "URL video (Opcional)",
                                   verticalMargin: 8,
+                                  maxLength: 150,
                                   onChanged: (value){
                                     _tempEvent.urlVideo = value;
                                   },
