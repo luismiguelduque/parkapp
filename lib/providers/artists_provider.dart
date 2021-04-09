@@ -55,7 +55,7 @@ class ArtistsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> store(ArtistModel artist, File profileImage, File coverImage) async {
     Map<String, dynamic> respJson = {};
-    final url = '$apiUrl/artists';
+    final url = 'https://$apiUrl/api/artists';
     try{
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);
@@ -96,23 +96,27 @@ class ArtistsProvider extends ChangeNotifier {
       }
       return respJson;
     }catch(error){
-      if(error['message'] == 'The given data was invalid'){
-        final Map<String, dynamic> errors = error['errors'];
-        errors.forEach((key, value) {
+      try{
+        if(error['message'] == 'The given data was invalid'){
+          final Map<String, dynamic> errors = error['errors'];
+          errors.forEach((key, value) {
+            respJson['success'] = false;
+            respJson['message'] = value.toString();
+          });
+        }else{
           respJson['success'] = false;
-          respJson['message'] = value.toString();
-        });
-      }else{
-        respJson['success'] = false;
-        respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+        }
+        return respJson;
+      }catch(error){
+        print("error");
       }
-      return respJson;
     }
   }
 
 Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage, File coverImage, int artistId) async {
     Map<String, dynamic> respJson = {};
-    final url = '$apiUrl/artists/$artistId';
+    final url = 'https://$apiUrl/api/artists/$artistId'; 
     try{
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);
@@ -173,10 +177,12 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   Future<void> getArtists({String search, int offset, int limit}) async {
     try {
       final Uri uri = Uri.https(apiUrl, "api/artists", {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
       });
+      print("getArtists");
+      print(uri);
       final response = await http.get(
         uri, 
         headers: {
@@ -330,7 +336,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> activateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "apiartists/activate/$artistId", {});
+    final Uri uri = Uri.https(apiUrl, "api/artists/activate/$artistId", {});
     try {
       final response = await http.post(
         uri, 
@@ -341,6 +347,8 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
         }
       );
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      print("++++-+++-----");
+      print(decodedResponse);
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
