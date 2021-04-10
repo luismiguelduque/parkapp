@@ -142,7 +142,7 @@ class MyApp extends StatelessWidget {
 
   String _getInitialRoute(){
     final prefs = new Preferences();
-    if(prefs.token!="0" && prefs.token!=null){
+    if(prefs.token!="0" && prefs.token!=null && prefs.token!=""){
       if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
         return "ask-location";
       }else{

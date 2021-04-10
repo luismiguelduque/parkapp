@@ -30,6 +30,12 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   
   CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
   bool _isLoaded = false;
+
+   @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
+  }
   
   @override
   void didChangeDependencies() async {
@@ -45,14 +51,18 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   
   void _animateMapCamera(){
     if(this.mounted) {
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
-            zoom: 14.0,
+      try{
+        mapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
+              zoom: 14.0,
+            ),
           ),
-        ),
-      );               
+        );    
+      }catch(error){
+        print(error);
+      }       
     }
   }
 

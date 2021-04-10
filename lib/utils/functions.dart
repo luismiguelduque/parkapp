@@ -123,11 +123,10 @@ logOutConfirmation(BuildContext context) {
                             width: size.width*0.3,
                             onPressed: () async { 
                               setState(() { loading = true; });
-                              await Future.wait([
-                                Provider.of<UsersProvider>(context, listen: false).setUserFCM(null),
-                                Provider.of<AuthProvider>(context, listen: false).logOut(),
-                              ]);
+                              await Provider.of<UsersProvider>(context, listen: false).setUserFCM(null);
                               Provider.of<AuthProvider>(context, listen: false).setPreferences(null);
+                              //await Provider.of<AuthProvider>(context, listen: false).logOut();
+                              
                               setState(() { loading = false; });
                               Navigator.of(context).pushReplacementNamed("wellcome");
                             }, 
