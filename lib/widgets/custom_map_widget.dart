@@ -36,10 +36,11 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   void didChangeDependencies() async {
     if(!_isLoaded){
       _currentPosition = await getCurrentUserLocation();
-      _animateMapCamera();
       if(this.mounted) {
         _isLoaded = true;
       }
+      await Future.delayed(const Duration(milliseconds: 10), (){});
+      _animateMapCamera();
     }
     super.didChangeDependencies();
   }

@@ -47,6 +47,12 @@
     <string>Need to upload image</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Need to upload image</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Need to access location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Need to access location</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>ANeed to access location</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
