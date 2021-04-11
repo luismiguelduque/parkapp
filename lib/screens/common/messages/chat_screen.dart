@@ -30,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
           chatProvider.getUserConversation(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;

@@ -61,7 +61,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           eventsProvider.getUserSheduledEvent(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -140,7 +140,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     Text(
                       "Detalle del evento",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white, shadows: <Shadow>[
+                      style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white, shadows: <Shadow>[
                         Shadow(
                           offset: Offset(0, 0),
                           blurRadius: 5.0,
@@ -253,7 +253,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             }
                           }
                         }else{
-                          showErrorMessage(context, "No tienes conexion a internet");
+                          showErrorMessage(context, "No tienes conexión a internet");
                         }
                       },
                       color: isSheduled ? AppTheme.getTheme().disabledColor : AppTheme.getTheme().colorScheme.secondary,
@@ -608,7 +608,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 showErrorMessage(context, "Dale una calificación al evento");
                               }
                             }else{
-                              showErrorMessage(context, "No tienes conexion a internet");
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                           },
                         ),
@@ -694,7 +694,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                   showErrorMessage(context, "Indica la razón");
                                 }
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),

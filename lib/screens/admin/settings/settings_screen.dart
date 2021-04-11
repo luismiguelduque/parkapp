@@ -25,7 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if(internet){
         await Provider.of<AuthProvider>(context, listen: false).getUser();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;

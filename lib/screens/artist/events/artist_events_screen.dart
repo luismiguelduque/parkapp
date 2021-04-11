@@ -42,7 +42,7 @@ class _ArtistEventsScreenState extends State<ArtistEventsScreen> {
           artistsProvider.getArtistDetail(_preferences.artistId),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -135,13 +135,13 @@ class _ArtistEventsScreenState extends State<ArtistEventsScreen> {
         unselectedLabelColor: Colors.grey,
         tabs: [
           Tab(
-            child: Text("Resumen", style: TextStyle(fontSize: 14),),
+            child: Text("Resumen", style: TextStyle(fontSize: 13),),
           ),
           Tab(
-            child: Text("Publicados", style: TextStyle(fontSize: 14),),
+            child: Text("Publicados", style: TextStyle(fontSize: 13),),
           ),
           Tab(
-            child: Text("Borrador", style: TextStyle(fontSize: 14),),
+            child: Text("Borrador", style: TextStyle(fontSize: 13),),
           ),
         ],
       ),

@@ -28,7 +28,7 @@ class _ArtistEventsResumeTabState extends State<ArtistEventsResumeTab> {
       if(internet){
         await Provider.of<ArtistsProvider>(context, listen: false).getArtistIndicators();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;

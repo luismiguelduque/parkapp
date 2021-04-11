@@ -30,7 +30,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       if(internet){
         await Provider.of<EventsProvider>(context, listen: false).getUserSheduledEvent();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -126,7 +126,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   eventsProvider.getUserSheduledEvent(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: Scrollbar(

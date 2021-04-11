@@ -39,7 +39,7 @@ class _AudienceProfileOptionsScreenState extends State<AudienceProfileOptionsScr
       if(internet){
         await Provider.of<AuthProvider>(context, listen: false).getUser();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -351,7 +351,7 @@ class _AudienceProfileOptionsScreenState extends State<AudienceProfileOptionsScr
                                     showErrorMessage(context, response['message']);
                                   }
                                 }else{
-                                  showErrorMessage(context, "No tienes conexion a internet");
+                                  showErrorMessage(context, "No tienes conexión a internet");
                                 }
                               },
                             ),

@@ -53,7 +53,7 @@ class _AudienceEventsWeekendTabState extends State<AudienceEventsWeekendTab> {
                   eventsProvider.getAudienceEventsWeekend(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: Scrollbar(

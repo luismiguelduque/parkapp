@@ -119,7 +119,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 },
                 icon: Icon(Icons.arrow_back),
               ),
-              Text("$_title", style: title1.copyWith(color: greyLightColor),),
+              Text("$_title", style: title3.copyWith(color: greyLightColor),),
             ],
           ),
         ],
@@ -128,6 +128,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
   }
 
   Widget _formSection() {
+    final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -198,7 +199,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
               children: [
                 Row(
                   children: [
-                    Text("Restringido", style: text3.copyWith(color: greyLightColor),),
+                    Text("Restringido", style: text4.copyWith(color: greyLightColor),),
                     Switch(
                       activeColor: secondaryColor,
                       onChanged: (value){
@@ -216,7 +217,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 CustomTextfield(
                   keyboardType: TextInputType.number,
                   height: 50,
-                  width: 150,
+                  width: size.width * 0.40,
                   value: (_placeTemp.dailyLimit != null && _placeTemp.restricted == "1") ? _placeTemp.dailyLimit.toString() : null,
                   label: 'Límite Diario',
                   readOnly: _placeTemp.restricted == "2",
@@ -350,7 +351,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
         _isSaving = false;
       });
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
   }
 }

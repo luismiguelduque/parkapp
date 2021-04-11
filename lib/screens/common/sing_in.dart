@@ -455,7 +455,7 @@ class _SignInState extends State<SignIn> {
         _isSaving = false;
       });
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
   }
 }

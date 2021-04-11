@@ -76,7 +76,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
           ),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -638,7 +638,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
         ),
       ]);
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
   }
 }

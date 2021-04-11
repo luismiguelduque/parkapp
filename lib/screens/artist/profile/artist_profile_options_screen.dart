@@ -226,7 +226,7 @@ class _ArtistProfileoptionsScreenState extends State<ArtistProfileoptionsScreen>
                                     showErrorMessage(context, response['message']);
                                   }
                                 }else{
-                                  showErrorMessage(context, "No tienes conexion a internet");
+                                  showErrorMessage(context, "No tienes conexión a internet");
                                 }
                               },
                             ),
@@ -324,7 +324,7 @@ class _ArtistProfileoptionsScreenState extends State<ArtistProfileoptionsScreen>
                                     showErrorMessage(context, response['message']);
                                   }
                                 }else{
-                                  showErrorMessage(context, "No tienes conexion a internet");
+                                  showErrorMessage(context, "No tienes conexión a internet");
                                 }
                               },
                             ),

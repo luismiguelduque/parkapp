@@ -201,7 +201,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                           }
                         }
                       }else{
-                        showErrorMessage(context, "No tienes conexion a internet");
+                        showErrorMessage(context, "No tienes conexión a internet");
                       }
                     },
                     child: Stack(

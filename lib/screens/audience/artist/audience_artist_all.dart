@@ -33,7 +33,7 @@ class _AudienceArtistAllState extends State<AudienceArtistAll> {
           artistsProvider.getArtistsAudience(null, _offset, _limit),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -92,7 +92,7 @@ class _AudienceArtistAllState extends State<AudienceArtistAll> {
                               _isLoadingSearch = false;
                             });
                           }else{
-                            showErrorMessage(context, "No tienes conexion a internet");
+                            showErrorMessage(context, "No tienes conexión a internet");
                           }
                         },
                       ),
@@ -113,7 +113,7 @@ class _AudienceArtistAllState extends State<AudienceArtistAll> {
                               setState(() { _isLoadingSearch = false; });
                             }
                           }else{
-                            showErrorMessage(context, "No tienes conexion a internet");
+                            showErrorMessage(context, "No tienes conexión a internet");
                           }
                         },
                       ),

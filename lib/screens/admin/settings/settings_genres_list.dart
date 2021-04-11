@@ -34,7 +34,7 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
           genresProvider.getArtisticGenres(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -71,7 +71,7 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
                       },
                       icon: Icon(Icons.arrow_back),
                     ),
-                    Text("Géneros artísticos", style: title2.copyWith(color: greyLightColor),),
+                    Text("Géneros artísticos", style: title3.copyWith(color: greyLightColor),),
                   ],
                 )
               ),
@@ -208,7 +208,7 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
                                   showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
                                 }
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),
@@ -291,7 +291,7 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
                                   showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
                                 }
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               } 
                             },
                           ),

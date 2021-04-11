@@ -35,7 +35,7 @@ class _AskLocationState extends State<AskLocation> {
           placesProvider.getNeighborhoods(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -119,7 +119,7 @@ class _AskLocationState extends State<AskLocation> {
                         });
                         Navigator.of(context).pushNamed('alert-gps');
                       }else{
-                        showErrorMessage(context, "No tienes conexion a internet");
+                        showErrorMessage(context, "No tienes conexión a internet");
                       }
                     },
                   ),

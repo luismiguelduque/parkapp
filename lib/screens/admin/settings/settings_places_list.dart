@@ -34,7 +34,7 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
           placesProvider.getNeighborhoods(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -77,7 +77,7 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
                           },
                           icon: Icon(Icons.arrow_back),
                         ),
-                        Text("Lugares de eventos", style: title2.copyWith(color: greyLightColor),),
+                        Text("Lugares de eventos", style: title3.copyWith(color: greyLightColor),),
                       ],
                     ),
                     IconButton(
@@ -149,7 +149,7 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
                   placesProvider.getPlaces(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: Scrollbar(
@@ -209,7 +209,7 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
                   placesProvider.getPlaces(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: Scrollbar(
@@ -310,7 +310,7 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
                                 }
                                 _isSaving = false;
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),
