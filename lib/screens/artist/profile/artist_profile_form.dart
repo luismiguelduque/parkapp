@@ -46,10 +46,15 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
     if (!_isLoaded) {
       _isLoading = true;
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        artistsProvider.getArtistDetail(_preferences.artistId),
-        Provider.of<GenresProvider>(context, listen: false).getArtisticGenres(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistsProvider.getArtistDetail(_preferences.artistId),
+          Provider.of<GenresProvider>(context, listen: false).getArtisticGenres(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _tempArtist = artistsProvider.artistDetail;
         _errors = {

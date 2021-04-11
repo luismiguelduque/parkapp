@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import './admin_artists_all_tab.dart';
 import './admin_artists_requests_tab.dart';
 import './admin_artists_suspensions_tab.dart';
+import '../../../utils/functions.dart';
 import '../../../utils/app_theme.dart';
 import '../../../providers/artists_provider.dart';
 import '../../../widgets/custom_bottom_menu.dart';
@@ -31,12 +32,18 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
       _isLoading = true;
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-      await Future.wait([
-        artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
-        artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
-        artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
-        chatProvider.getAdminAllConversation(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+          artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+          artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
+          chatProvider.getAdminAllConversation(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
+      
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -87,11 +94,16 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                             setState(() { 
                               _isLoadingSearch = true;
                             });
-                            await Future.wait([
-                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: value),
-                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: value),
-                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: value),
-                            ]);
+                            bool internet = await check(context);
+                            if(internet){
+                              await Future.wait([
+                                artistsProvider.getArtists(limit: _limit, offset: _offset, search: value),
+                                artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: value),
+                                artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: value),
+                              ]);
+                            }else{
+                              showErrorMessage(context, "No tienes conexion a internet");
+                            }
                             setState(() { 
                               _isLoadingSearch = false;
                             });
@@ -105,11 +117,16 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                               _isLoadingSearch = true;
                               _searchFilter = !_searchFilter;
                             });
-                            await Future.wait([
-                              artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
-                              artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
-                              artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
-                            ]);
+                            bool internet = await check(context);
+                            if(internet){
+                              await Future.wait([
+                                artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                                artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                                artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
+                              ]);
+                            }else{
+                              showErrorMessage(context, "No tienes conexion a internet");
+                            }
                             if(this.mounted) {
                               setState(() { _isLoadingSearch = false; });
                             }

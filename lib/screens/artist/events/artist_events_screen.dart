@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -33,11 +34,16 @@ class _ArtistEventsScreenState extends State<ArtistEventsScreen> {
       final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        eventsProvider.getArtistEvents(),
-        placesProvider.getPlaces(),
-        artistsProvider.getArtistDetail(_preferences.artistId),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          eventsProvider.getArtistEvents(),
+          placesProvider.getPlaces(),
+          artistsProvider.getArtistDetail(_preferences.artistId),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -58,11 +59,16 @@ class _AdminArtistsRequestsTabState extends State<AdminArtistsRequestsTab> {
         if(artistsProvider.artistsRequests.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
-                artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
-                artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  artistsProvider.getArtists(limit: _limit, offset: _offset, search: null),
+                  artistsProvider.getArtistsRequests(limit: _limit, offset: _offset, search: null),
+                  artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexion a internet");
+              }
             },
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo){
