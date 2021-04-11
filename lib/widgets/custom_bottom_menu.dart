@@ -202,7 +202,7 @@ class _CustomBottomMenuState extends State<CustomBottomMenu> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   text,
                   style: TextStyle(
