@@ -506,6 +506,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  simple_auth:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c97181ed8d43aeb1efe6e1a0e5c8c6dd608ab772
+      url: "https://github.com/luismiguelduque/simple_auth"
+    source: git
+    version: "2.0.8"
   sky_engine:
     dependency: transitive
     description: flutter

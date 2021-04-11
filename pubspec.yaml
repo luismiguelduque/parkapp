@@ -49,6 +49,9 @@ dependencies:
   cloud_firestore: ^1.0.4
   flushbar: ^1.10.4
   connectivity: ^3.0.3
+  simple_auth:
+    git:
+      url: https://github.com/luismiguelduque/simple_auth
   
 
 dev_dependencies:
