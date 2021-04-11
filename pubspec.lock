@@ -515,6 +515,15 @@ packages:
       url: "https://github.com/luismiguelduque/simple_auth.git"
     source: git
     version: "2.0.8"
+  simple_auth_flutter:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: aafcdb8281bfdee442a2b97930e516d75ded4091
+      url: "https://github.com/luismiguelduque/simple_auth_flutter.git"
+    source: git
+    version: "2.0.8"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-//import 'package:simple_auth_flutter/simple_auth_flutter.dart';
+import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 
 import './utils/app_theme.dart';
 import './utils/preferences.dart';
@@ -59,7 +59,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //SimpleAuthFlutter.init(context);
+    SimpleAuthFlutter.init(context);
     final String initialRoute = _getInitialRoute();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,

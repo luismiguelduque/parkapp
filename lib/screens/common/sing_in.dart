@@ -52,61 +52,65 @@ class _SignInState extends State<SignIn> {
   );
 
   Future<void> _loginAndGetData() async {
-    _igApi.authenticate().then(
-      (simpleAuth.Account _user) async {
-        simpleAuth.OAuthAccount user = _user;
-        final Uri uri = Uri.https("graph.instagram.com", "/me", {
-          "fields": "username,id,account_type,media_count",
-          "access_token": user.token,
-        });
-        final response = await http.get( uri);
-        final extractedData = json.decode(response.body) as Map<String, dynamic>;
-        /*
-        var igUserResponse = 
-            await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
-          '/me',
-          queryParameters: {
-            // Get the fields you need.
-            // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
+    try{
+      _igApi.authenticate().then(
+        (simpleAuth.Account _user) async {
+          simpleAuth.OAuthAccount user = _user;
+          final Uri uri = Uri.https("graph.instagram.com", "/me", {
             "fields": "username,id,account_type,media_count",
             "access_token": user.token,
-          },
-        );
-        */
-        setState(() {
-          _userData = extractedData['data'];
-          _errorMsg = null;
-        });
-        final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
-        if (resp['success']) {
-          await _auth.signInAnonymously();
-          showSuccessMessage(context, resp["message"]);
-          await Future.delayed(const Duration(seconds: 3), (){});
-          final prefs = new Preferences();
-          if(prefs.token!="0" && prefs.token!=null){
-            if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
-            }else{
-              if(prefs.userTypeId==1){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-              }else if(prefs.userTypeId==2){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
-              }else if(prefs.userTypeId==3){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
+          });
+          final response = await http.get( uri);
+          final extractedData = json.decode(response.body) as Map<String, dynamic>;
+          /*
+          var igUserResponse = 
+              await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+            '/me',
+            queryParameters: {
+              // Get the fields you need.
+              // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
+              "fields": "username,id,account_type,media_count",
+              "access_token": user.token,
+            },
+          );
+          */
+          setState(() {
+            _userData = extractedData['data'];
+            _errorMsg = null;
+          });
+          final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
+          if (resp['success']) {
+            await FirebaseAuth.instance.signInAnonymously();
+            showSuccessMessage(context, resp["message"]);
+            await Future.delayed(const Duration(seconds: 3), (){});
+            final prefs = new Preferences();
+            if(prefs.token!="0" && prefs.token!=null){
+              if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
               }else{
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+                if(prefs.userTypeId==1){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+                }else if(prefs.userTypeId==2){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
+                }else if(prefs.userTypeId==3){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
+                }else{
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+                }
               }
             }
+          }else{ 
+            showErrorMessage(context, resp["message"]);
           }
-        }else{ 
-          showErrorMessage(context, resp["message"]);
-        }
-      },
-    ).catchError(
-      (Object e) {
-        setState(() => _errorMsg = e.toString());
-      },
-    );
+        },
+      ).catchError(
+        (Object e) {
+          setState(() => _errorMsg = e.toString());
+        },
+      );
+    }catch(error){
+      print(error);
+    }
   }
 
   @override
@@ -135,7 +139,7 @@ class _SignInState extends State<SignIn> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        /*
+                        
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
@@ -172,7 +176,7 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
-                        */
+                        
                         SizedBox(height: 20,),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -335,7 +339,7 @@ class _SignInState extends State<SignIn> {
               if(isFacebook) {
                 //await loginWithFacebook(context);
               } else {
-                //await _loginAndGetData();
+                await _loginAndGetData();
               }
             }
           },
