@@ -235,11 +235,14 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "${event.name}", 
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
-                              overflow: TextOverflow.ellipsis,
-                              ),
+                            Container(
+                              width: size.width*0.55,
+                              child: Text(
+                                "${event.name}", 
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
+                                overflow: TextOverflow.ellipsis,
+                                ),
+                            ),
                           ],
                         )
                       ],

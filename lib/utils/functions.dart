@@ -158,25 +158,31 @@ TimeOfDay stringToTimeOfDay(String tod) {
 }
 
 Future<Position> getCurrentUserLocation() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    PermissionStatus permission = await LocationPermissions().requestPermissions();
-  }
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.deniedForever) {
-    return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(latitude: -34.61315, longitude: -58.37723));
-    //return Future.error('Location permissions are permantly denied, we cannot request permissions.');
-  }
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
-      return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(altitude: -34.61315, longitude: -58.37723));
-      //return Future.error('Location permissions are denied (actual value: $permission).');
+  try{
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      PermissionStatus permission = await LocationPermissions().requestPermissions();
     }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(latitude: -34.61315, longitude: -58.37723));
+      //return Future.error('Location permissions are permantly denied, we cannot request permissions.');
+    }
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(altitude: -34.61315, longitude: -58.37723));
+        //return Future.error('Location permissions are denied (actual value: $permission).');
+      }
+    }
+    return await Geolocator.getCurrentPosition();
+  }catch(error){
+    print(error);
+    return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(altitude: -34.61315, longitude: -58.37723));
   }
-  return await Geolocator.getCurrentPosition();
+  
 }
 
 /*
