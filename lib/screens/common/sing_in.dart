@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:parkapp/utils/constants.dart';
 import 'package:provider/provider.dart';
-//import 'package:simple_auth/simple_auth.dart' as simpleAuth;
-//import 'package:simple_auth_flutter/simple_auth_flutter.dart';
-//import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 
+import '../../utils/constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/app_theme.dart';
 import '../../utils/functions.dart';
@@ -39,7 +39,7 @@ class _SignInState extends State<SignIn> {
   String _password;
   String _errorMsg;
   Map _userData;
-/*
+
   final simpleAuth.InstagramApi _igApi = simpleAuth.InstagramApi(
     "instagram",
     igClientId,
@@ -55,8 +55,14 @@ class _SignInState extends State<SignIn> {
     _igApi.authenticate().then(
       (simpleAuth.Account _user) async {
         simpleAuth.OAuthAccount user = _user;
-
-        var igUserResponse =
+        final Uri uri = Uri.https("graph.instagram.com", "/me", {
+          "fields": "username,id,account_type,media_count",
+          "access_token": user.token,
+        });
+        final response = await http.get( uri);
+        final extractedData = json.decode(response.body) as Map<String, dynamic>;
+        /*
+        var igUserResponse = 
             await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
           '/me',
           queryParameters: {
@@ -66,8 +72,9 @@ class _SignInState extends State<SignIn> {
             "access_token": user.token,
           },
         );
+        */
         setState(() {
-          _userData = igUserResponse.data;
+          _userData = extractedData['data'];
           _errorMsg = null;
         });
         final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
@@ -101,7 +108,7 @@ class _SignInState extends State<SignIn> {
       },
     );
   }
-*/
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
