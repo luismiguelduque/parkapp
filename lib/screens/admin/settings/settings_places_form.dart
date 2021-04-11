@@ -25,6 +25,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
 
   bool _isLoaded = false;
   bool _isLoading = false;
+  bool _showMap = false;
   bool _isSaving=false;
   BitmapDescriptor pinLocationIcon;
   String _title;
@@ -56,7 +57,12 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
               draggable: true,
               infoWindow: InfoWindow(
                 title: '${_placeTemp.name}'
-              )
+              ),
+              onTap: (){},
+              alpha: 1.0,
+              visible: true,
+              zIndex: 1.0,
+
             ),
           );
         });
@@ -65,9 +71,12 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
           _title = "Crear un lugar de eventos";
         });
       }
+      
+      await Future.delayed(const Duration(milliseconds: 10), (){});
       setState(() {
         _isLoading = false;
         _isLoaded = true;
+        _showMap = true;
       });
     }
     super.didChangeDependencies();
@@ -119,7 +128,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 },
                 icon: Icon(Icons.arrow_back),
               ),
-              Text("$_title", style: title3.copyWith(color: greyLightColor),),
+              Text("$_title", style: title1.copyWith(color: greyLightColor),),
             ],
           ),
         ],
@@ -128,7 +137,6 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
   }
 
   Widget _formSection() {
-    final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -167,9 +175,20 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
             Container(
               width: double.infinity,
               height: 220,
-              child: CustomMapWidget(
+              child: _showMap ? CustomMapWidget(
                 useLocation: _placeTemp.id == null,
+                markers: [
+                  Marker(
+                    markerId: MarkerId('${_placeTemp.id}'),
+                    position: LatLng(double.parse(_placeTemp.lat), double.parse(_placeTemp.long)),
+                    icon: pinLocationIcon,
+                    infoWindow: InfoWindow(
+                      title: '${_placeTemp.name}'
+                    )
+                  ),
+                ],
                 onCLick: (val){
+                  print(val);
                   _markers.add(
                     Marker(
                       markerId: MarkerId('${_placeTemp.id}'),
@@ -189,9 +208,8 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                     _placeTemp.lat = val.latitude.toString();
                     _placeTemp.long = val.longitude.toString();
                   });
-                }, 
-                markers: _markers
-              )
+                }
+              ) : Container(),
             ),
             SizedBox(height: 11.0,),
             Row(
@@ -199,7 +217,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
               children: [
                 Row(
                   children: [
-                    Text("Restringido", style: text4.copyWith(color: greyLightColor),),
+                    Text("Restringido", style: text3.copyWith(color: greyLightColor),),
                     Switch(
                       activeColor: secondaryColor,
                       onChanged: (value){
@@ -217,7 +235,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 CustomTextfield(
                   keyboardType: TextInputType.number,
                   height: 50,
-                  width: size.width * 0.40,
+                  width: 150,
                   value: (_placeTemp.dailyLimit != null && _placeTemp.restricted == "1") ? _placeTemp.dailyLimit.toString() : null,
                   label: 'Límite Diario',
                   readOnly: _placeTemp.restricted == "2",
@@ -351,7 +369,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
         _isSaving = false;
       });
     }else{
-      showErrorMessage(context, "No tienes conexión a internet");
+      showErrorMessage(context, "No tienes conexion a internet");
     }
   }
 }

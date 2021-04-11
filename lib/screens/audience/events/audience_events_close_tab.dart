@@ -23,13 +23,18 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
   bool _isLoaded = false;
   bool _isSaving = false;
   final _preferences = new Preferences();
+  bool _showMap = false;
 
-   @override
+  @override
   void didChangeDependencies() async {
     if(!_isLoaded){
       setCustomMapPin();
       _isLoaded = true;
     }
+    await Future.delayed(const Duration(milliseconds: 10), (){});
+    setState(() {
+      _showMap = true;
+    });
     super.didChangeDependencies();
   }
 
@@ -77,7 +82,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
               Expanded(
                 child: Stack(
                   children: [
-                    CustomMapWidget(
+                    _showMap ? CustomMapWidget(
                       allowMarker: false,
                       onCLick: (val){},
                       markers: eventsProvider.audienceEventsClose.map((event) {
@@ -90,7 +95,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                           )
                         );
                       }).toList(),
-                    ),
+                    ) : Container(),
                     Positioned(
                       bottom: 0,
                       child: Container(
