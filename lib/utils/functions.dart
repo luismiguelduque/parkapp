@@ -173,14 +173,14 @@ Future<Position> getCurrentUserLocation() async {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
-        return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(altitude: -34.61315, longitude: -58.37723));
+        return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(latitude: -34.61315, longitude: -58.37723));
         //return Future.error('Location permissions are denied (actual value: $permission).');
       }
     }
     return await Geolocator.getCurrentPosition();
   }catch(error){
     print(error);
-    return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(altitude: -34.61315, longitude: -58.37723));
+    return Future.delayed(Duration(milliseconds: 1)).then((value) => Position(latitude: -34.61315, longitude: -58.37723));
   }
   
 }

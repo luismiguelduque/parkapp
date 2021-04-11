@@ -178,14 +178,17 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
               child: _showMap ? CustomMapWidget(
                 useLocation: _placeTemp.id == null,
                 markers: [
-                  Marker(
-                    markerId: MarkerId('${_placeTemp.id}'),
-                    position: LatLng(double.parse(_placeTemp.lat), double.parse(_placeTemp.long)),
-                    icon: pinLocationIcon,
-                    infoWindow: InfoWindow(
-                      title: '${_placeTemp.name}'
-                    )
-                  ),
+                  if(_placeTemp.id != null)
+                    Marker(
+                      markerId: MarkerId('${_placeTemp.id}'),
+                      position: LatLng(double.parse(_placeTemp.lat), double.parse(_placeTemp.long)),
+                      icon: pinLocationIcon,
+                      infoWindow: InfoWindow(
+                        title: '${_placeTemp.name}'
+                      )
+                    ),
+                  
+                  
                 ],
                 onCLick: (val){
                   print(val);

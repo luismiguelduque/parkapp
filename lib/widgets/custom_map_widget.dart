@@ -67,13 +67,13 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         mapType: MapType.normal,
         zoomGesturesEnabled: true,
         zoomControlsEnabled: false,
-        markers: widget.markers.length != null ? Set<Marker>.of(widget.markers) : Set<Marker>.of([]),
+        markers: Set<Marker>.of(widget.markers),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
         onTap: widget.allowMarker == true ? (value){
           widget.onCLick(value);
-          if(widget.markers.length == 0){
+          if(widget.markers != null){
             setState(() {
               widget.markers.add(Marker(
                 markerId: MarkerId(value.toString()),
