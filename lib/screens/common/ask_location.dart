@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -26,11 +27,16 @@ class _AskLocationState extends State<AskLocation> {
     if(!_isLoaded){
       _isLoading = true;
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
-      await Future.wait([
-        placesProvider.getProvinces(),
-        placesProvider.getCities(),
-        placesProvider.getNeighborhoods(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          placesProvider.getProvinces(),
+          placesProvider.getCities(),
+          placesProvider.getNeighborhoods(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -102,14 +108,19 @@ class _AskLocationState extends State<AskLocation> {
                     color: AppTheme.getTheme().colorScheme.primary,
                     text: "Seleccionar",
                     onPressed: () async {
-                      setState(() {
-                        _isSaving = true;
-                      });
-                      await Provider.of<PlacesProvider>(context, listen: false).updateUserLocation(_provinceId, _cityId, _neighborhoodId);
-                      setState(() {
-                        _isSaving = false;
-                      });
-                      Navigator.of(context).pushNamed('alert-gps');
+                      bool internet = await check(context);
+                      if(internet){
+                        setState(() {
+                          _isSaving = true;
+                        });
+                        await Provider.of<PlacesProvider>(context, listen: false).updateUserLocation(_provinceId, _cityId, _neighborhoodId);
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.of(context).pushNamed('alert-gps');
+                      }else{
+                        showErrorMessage(context, "No tienes conexion a internet");
+                      }
                     },
                   ),
                   SizedBox(height: size.height*0.1,),

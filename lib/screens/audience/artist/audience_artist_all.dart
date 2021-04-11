@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -26,9 +27,14 @@ class _AudienceArtistAllState extends State<AudienceArtistAll> {
     if(!_isLoaded){
       _isLoading = true;
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        artistsProvider.getArtistsAudience(null, _offset, _limit),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistsProvider.getArtistsAudience(null, _offset, _limit),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -73,31 +79,41 @@ class _AudienceArtistAllState extends State<AudienceArtistAll> {
                         width: size.width*0.4,
                         height: 45.0,
                         onChanged: (value) async {
-                          final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-                          setState(() { 
-                            _isLoadingSearch = true;
-                          });
-                          await Future.wait([
-                            artistsProvider.getArtistsAudience(value, _offset, _limit),
-                          ]);
-                          setState(() { 
-                            _isLoadingSearch = false;
-                          });
+                          bool internet = await check(context);
+                          if(internet){
+                            final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
+                            setState(() { 
+                              _isLoadingSearch = true;
+                            });
+                            await Future.wait([
+                              artistsProvider.getArtistsAudience(value, _offset, _limit),
+                            ]);
+                            setState(() { 
+                              _isLoadingSearch = false;
+                            });
+                          }else{
+                            showErrorMessage(context, "No tienes conexion a internet");
+                          }
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.cancel, color: AppTheme.getTheme().colorScheme.primary, size: 35,),
                         onPressed: () async {
-                          final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-                          setState(() { 
-                            _isLoadingSearch = true;
-                            _searchFilter = !_searchFilter;
-                          });
-                          await Future.wait([
-                            artistsProvider.getArtistsAudience(null, _offset, _limit),
-                          ]);
-                          if(this.mounted) {
-                            setState(() { _isLoadingSearch = false; });
+                          bool internet = await check(context);
+                          if(internet){
+                            final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
+                            setState(() { 
+                              _isLoadingSearch = true;
+                              _searchFilter = !_searchFilter;
+                            });
+                            await Future.wait([
+                              artistsProvider.getArtistsAudience(null, _offset, _limit),
+                            ]);
+                            if(this.mounted) {
+                              setState(() { _isLoadingSearch = false; });
+                            }
+                          }else{
+                            showErrorMessage(context, "No tienes conexion a internet");
                           }
                         },
                       ),

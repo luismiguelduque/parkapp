@@ -28,9 +28,14 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
     if(!_isLoaded){
       _isLoading = true;
       final genresProvider = Provider.of<GenresProvider>(context, listen: false);
-      await Future.wait([
-        genresProvider.getArtisticGenres(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          genresProvider.getArtisticGenres(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -176,29 +181,34 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final genresProvider = Provider.of<GenresProvider>(context, listen: false);
-                              Map<String, dynamic> response;
-                              if( id != null) {
-                                response = await genresProvider.updateCategoryGenre(id, _description);
-                              } else {
-                                response = await genresProvider.storeEventCatGenre(_description);
-                              }
-                              setState((){
-                                _isSaving = false;
-                              });
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                if (id != null) {
-                                  showSuccessMessage(context, "El género artístico editado exitosamente");
-                                } else if (id == null) {
-                                  showSuccessMessage(context, "El género artístico creado exitosamente");
+                              bool internet = await check(context);
+                              if(internet){
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final genresProvider = Provider.of<GenresProvider>(context, listen: false);
+                                Map<String, dynamic> response;
+                                if( id != null) {
+                                  response = await genresProvider.updateCategoryGenre(id, _description);
+                                } else {
+                                  response = await genresProvider.storeEventCatGenre(_description);
                                 }
-                                genresProvider.getArtisticGenres();
-                              } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                setState((){
+                                  _isSaving = false;
+                                });
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  if (id != null) {
+                                    showSuccessMessage(context, "El género artístico editado exitosamente");
+                                  } else if (id == null) {
+                                    showSuccessMessage(context, "El género artístico creado exitosamente");
+                                  }
+                                  genresProvider.getArtisticGenres();
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
                               }
                             },
                           ),
@@ -263,21 +273,26 @@ class _SettingsGenresListState extends State<SettingsGenresList> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final genresProvider = Provider.of<GenresProvider>(context, listen: false);
-                              Map<String, dynamic> response = await genresProvider.deleteCategoryGenre(id);
-                              setState((){
-                                _isSaving = false;
-                              });
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                showSuccessMessage(context, "La categoría del evento eliminada exitosamente");
-                                genresProvider.getArtisticGenres();
-                              } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
-                              }
+                              bool internet = await check(context);
+                              if(internet){
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final genresProvider = Provider.of<GenresProvider>(context, listen: false);
+                                Map<String, dynamic> response = await genresProvider.deleteCategoryGenre(id);
+                                setState((){
+                                  _isSaving = false;
+                                });
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  showSuccessMessage(context, "La categoría del evento eliminada exitosamente");
+                                  genresProvider.getArtisticGenres();
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
+                              } 
                             },
                           ),
                           CustomGeneralButton(

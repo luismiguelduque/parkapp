@@ -25,12 +25,17 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
     if(!_isLoaded){
       _isLoading = true;
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
-      await Future.wait([
-        placesProvider.getPlaces(),
-        placesProvider.getProvinces(),
-        placesProvider.getCities(),
-        placesProvider.getNeighborhoods(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          placesProvider.getPlaces(),
+          placesProvider.getProvinces(),
+          placesProvider.getCities(),
+          placesProvider.getNeighborhoods(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -138,9 +143,14 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
         if(placesProvider.places.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                placesProvider.getPlaces(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  placesProvider.getPlaces(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexion a internet");
+              }
             },
             child: Scrollbar(
               child: ListView.builder(
@@ -193,9 +203,14 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
         if(placesProvider.places.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                placesProvider.getPlaces(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  placesProvider.getPlaces(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexion a internet");
+              }
             },
             child: Scrollbar(
               child: ListView.builder(
@@ -279,21 +294,24 @@ class _SettingsPlacesListState extends State<SettingsPlacesList> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: () async {
-                              setState(() {
-                                _isSaving = true;
-                              });
-                              final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
-                              final resp = await placesProvider.deletePlace(id);
-                              if (resp['success']) {
-                                Navigator.pop(context);
-                                showSuccessMessage(context, resp["message"]);
-                                await placesProvider.getPlaces();
-                              }else{ 
-                                showErrorMessage(context, resp["message"]);
+                              bool internet = await check(context);
+                              if(internet){
+                                setState(() {
+                                  _isSaving = true;
+                                });
+                                final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
+                                final resp = await placesProvider.deletePlace(id);
+                                if (resp['success']) {
+                                  Navigator.pop(context);
+                                  showSuccessMessage(context, resp["message"]);
+                                  await placesProvider.getPlaces();
+                                }else{ 
+                                  showErrorMessage(context, resp["message"]);
+                                }
+                                _isSaving = false;
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
                               }
-                              _isSaving = false;
-                            
-                              
                             },
                           ),
                           CustomGeneralButton(

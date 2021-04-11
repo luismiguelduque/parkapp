@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void didChangeDependencies() async {
     if (!_isLoaded) {
       _isLoading = true;
-      await Provider.of<AuthProvider>(context, listen: false).getUser();
+      bool internet = await check(context);
+      if(internet){
+        await Provider.of<AuthProvider>(context, listen: false).getUser();
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
       });

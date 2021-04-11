@@ -203,25 +203,30 @@ class _ArtistProfileoptionsScreenState extends State<ArtistProfileoptionsScreen>
                               textStyle: title3,
                               width: size.width*0.6,
                               onPressed: _isSaving ? null : () async {
-                                if (!_formKey.currentState.validate()) {
-                                  return;
-                                }
-                                _formKey.currentState.save();
-                                setState(() {
-                                  _isLoading = true;
-                                  _showAccess = false;
-                                  _isSaving = true;
-                                });
-                                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                                Map<String, dynamic> response = await authProvider.changePassword(_currentPassword, _newPassword, _repeatNewPassword);
-                                setState((){
-                                  _isSaving = false;
-                                });
-                                if (response['success']) {
-                                  Navigator.of(context).pushNamed('artist-profile-options');
-                                  showSuccessMessage(context, response['message']);
-                                } else {
-                                  showErrorMessage(context, response['message']);
+                                bool internet = await check(context);
+                                if(internet){
+                                  if (!_formKey.currentState.validate()) {
+                                    return;
+                                  }
+                                  _formKey.currentState.save();
+                                  setState(() {
+                                    _isLoading = true;
+                                    _showAccess = false;
+                                    _isSaving = true;
+                                  });
+                                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                                  Map<String, dynamic> response = await authProvider.changePassword(_currentPassword, _newPassword, _repeatNewPassword);
+                                  setState((){
+                                    _isSaving = false;
+                                  });
+                                  if (response['success']) {
+                                    Navigator.of(context).pushNamed('artist-profile-options');
+                                    showSuccessMessage(context, response['message']);
+                                  } else {
+                                    showErrorMessage(context, response['message']);
+                                  }
+                                }else{
+                                  showErrorMessage(context, "No tienes conexion a internet");
                                 }
                               },
                             ),
@@ -296,25 +301,30 @@ class _ArtistProfileoptionsScreenState extends State<ArtistProfileoptionsScreen>
                               textStyle: title3,
                               width: size.width*0.6,
                               onPressed: _isSaving ? null : () async {
-                                if (!_formKey.currentState.validate()) {
-                                  return;
-                                }
-                                _formKey.currentState.save();
-                                setState(() {
-                                  _isLoading = true;
-                                  _showAccess = false;
-                                  _isSaving = true;
-                                });
-                                final usersProvider = Provider.of<UsersProvider>(context, listen: false);
-                                Map<String, dynamic> response = await usersProvider.changeDataUser(_preferences.userId, _name);
-                                setState((){
-                                  _isSaving = false;
-                                });
-                                Navigator.pop(context);
-                                if (response['success']) {
-                                  showSuccessMessage(context, response['message']);
-                                } else {
-                                  showErrorMessage(context, response['message']);
+                                bool internet = await check(context);
+                                if(internet){
+                                  if (!_formKey.currentState.validate()) {
+                                    return;
+                                  }
+                                  _formKey.currentState.save();
+                                  setState(() {
+                                    _isLoading = true;
+                                    _showAccess = false;
+                                    _isSaving = true;
+                                  });
+                                  final usersProvider = Provider.of<UsersProvider>(context, listen: false);
+                                  Map<String, dynamic> response = await usersProvider.changeDataUser(_preferences.userId, _name);
+                                  setState((){
+                                    _isSaving = false;
+                                  });
+                                  Navigator.pop(context);
+                                  if (response['success']) {
+                                    showSuccessMessage(context, response['message']);
+                                  } else {
+                                    showErrorMessage(context, response['message']);
+                                  }
+                                }else{
+                                  showErrorMessage(context, "No tienes conexion a internet");
                                 }
                               },
                             ),

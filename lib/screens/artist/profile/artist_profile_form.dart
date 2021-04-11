@@ -164,8 +164,6 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
                         ),
                         Divider(),
 
-
-
                         if(_tempArtist.profileImage == '') 
                           _iconFieldItem(Icons.attach_file, _profileImage == null ? "Adjuntar foto de perfil" : "Cambiar foto de perfil", _openGalleryProfile)
                         else 
@@ -216,11 +214,6 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
                             ),
                           ),
                         _showErrors == true ? CustomErrorMessage(message: _errors['coverImage']) : Container(),
-
-
-
-
-
 
                         /*
                         _iconFieldItem(Icons.attach_file, _profileImage == null ? "Adjuntar foto de perfil" : "Cambiar foto de perfil", _openGalleryProfile),
@@ -402,42 +395,55 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
   }
 
   void _openGalleryProfile(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _profileImage = File(pickedFile.path);
-    });
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }catch(error){
+      print(error);
+    }
   }
 
   void _openGalleryCover(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _coverImage =  File(pickedFile.path);
-    });
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _coverImage =  File(pickedFile.path);
+      });
+    }catch(error){
+      print(error);
+    }
   }
 
   void _save() async {
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<ArtistsProvider>(context, listen: false).updateArtist(_tempArtist, _profileImage, _coverImage, _preferences.artistId);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      Navigator.of(context).pushNamed("artist-profile-options");
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+    bool internet = await check(context);
+    if(internet){
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<ArtistsProvider>(context, listen: false).updateArtist(_tempArtist, _profileImage, _coverImage, _preferences.artistId);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        Navigator.of(context).pushNamed("artist-profile-options");
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    setState(() {
-      _isSaving = false;
-    });
   }
 
 }

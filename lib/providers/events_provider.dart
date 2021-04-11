@@ -211,7 +211,7 @@ class EventsProvider extends ChangeNotifier {
     if(toTime != null) toTime = "${toTime.hour}:${toTime.minute}";
     //var url = "$apiUrl/events/audience/all?offset=$offset&limit=$limit&fromDate=$fromDate&toDate=$toDate&fromTime=$fromTime&toTime=$toTime&neighborhoods=$neighborhoods&artists=$artists&rating=$rating&categories=$categories&distance=$distance";
     final Uri uri = Uri.https(apiUrl, "api/artists", {
-      "search": "$search",
+      "search": search==null?"":search,
       "offset": "$offset",
       "limit": "$limit",
       "fromDate": "$fromDate",
@@ -259,7 +259,7 @@ class EventsProvider extends ChangeNotifier {
   Future<void> getAdminEventsAll({int offset, int limit, String search}) async {
     try {
       final uri = Uri.https(apiUrl, 'api/events/admin', {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
       });
@@ -300,7 +300,7 @@ class EventsProvider extends ChangeNotifier {
   Future<void> getAdminEventsPending({int offset, int limit, String search}) async {
     try {
       final Uri uri = Uri.https(apiUrl, "api/events/admin", {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit",
         "pending": "true",
@@ -343,7 +343,7 @@ class EventsProvider extends ChangeNotifier {
     
     try {
       final Uri uri = Uri.https(apiUrl, "api/events/admin", {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit",
         "denounced": "true",

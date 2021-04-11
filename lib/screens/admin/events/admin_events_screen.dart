@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -31,12 +32,17 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
       _isLoading = true;
       final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
-      await Future.wait([
-        eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: null),
-        eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: null),
-        eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
-        placesProvider.getPlaces(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: null),
+          eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: null),
+          eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
+          placesProvider.getPlaces(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -89,11 +95,16 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
                               setState(() { 
                                 _isLoadingSearch = true;
                               });
-                              await Future.wait([
-                                eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: value),
-                                eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: value),
-                                eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: value),
-                              ]);
+                              bool internet = await check(context);
+                              if(internet){
+                                await Future.wait([
+                                  eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: value),
+                                  eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: value),
+                                  eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: value),
+                                ]);
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
+                              }
                               setState(() { 
                                 _isLoadingSearch = false;
                               });
@@ -107,11 +118,16 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
                                 _isLoadingSearch = true;
                                 _searchFilter = !_searchFilter;
                               });
-                              await Future.wait([
-                                eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: null),
-                                eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: null),
-                                eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
-                              ]);
+                              bool internet = await check(context);
+                              if(internet){
+                                await Future.wait([
+                                  eventsProvider.getAdminEventsAll(limit: _limit, offset: _offset, search: null),
+                                  eventsProvider.getAdminEventsPending(limit: _limit, offset: _offset, search: null),
+                                  eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
+                                ]);
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
+                              }
                               if(this.mounted) {
                                 setState(() { _isLoadingSearch = false; });
                               }

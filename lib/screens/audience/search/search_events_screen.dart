@@ -54,25 +54,30 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
       final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
       final artistProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        artistProvider.getArtists(search: null, limit: 150, offset: 0),
-        placesProvider.getNeighborhoods(),
-        categoriesProvider.getEventCategory(),
-        eventsProvider.getAudienceEventsAll(
-          offset: _offset,
-          limit: _limit,
-          search: _search,
-          fromDate:  _fromDate,
-          toDate: _toDate,
-          fromTime:  _fromTime,
-          toTime: _toTime,
-          neighborhoods: _neighborhoods,
-          artists: _artist,
-          rating: _rating,
-          categories: _categories.length > 0 ? _categories : null,
-          distance: _searchDistance ? _distance : null,
-        ),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistProvider.getArtists(search: null, limit: 150, offset: 0),
+          placesProvider.getNeighborhoods(),
+          categoriesProvider.getEventCategory(),
+          eventsProvider.getAudienceEventsAll(
+            offset: _offset,
+            limit: _limit,
+            search: _search,
+            fromDate:  _fromDate,
+            toDate: _toDate,
+            fromTime:  _fromTime,
+            toTime: _toTime,
+            neighborhoods: _neighborhoods,
+            artists: _artist,
+            rating: _rating,
+            categories: _categories.length > 0 ? _categories : null,
+            distance: _searchDistance ? _distance : null,
+          ),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -614,21 +619,26 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
 
   void _getItems() async {
     final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-    await Future.wait([
-      eventsProvider.getAudienceEventsAll(
-        offset: _offset,
-        limit: _limit,
-        search: _search,
-        fromDate:  _fromDate,
-        toDate: _toDate,
-        fromTime:  _fromTime,
-        toTime: _toTime,
-        neighborhoods: _neighborhoods,
-        artists: _artist,
-        rating: _rating,
-        categories: _categories.length > 0 ? _categories : null,
-        distance: _searchDistance ? _distance : null,
-      ),
-    ]);
+    bool internet = await check(context);
+    if(internet){
+      await Future.wait([
+        eventsProvider.getAudienceEventsAll(
+          offset: _offset,
+          limit: _limit,
+          search: _search,
+          fromDate:  _fromDate,
+          toDate: _toDate,
+          fromTime:  _fromTime,
+          toTime: _toTime,
+          neighborhoods: _neighborhoods,
+          artists: _artist,
+          rating: _rating,
+          categories: _categories.length > 0 ? _categories : null,
+          distance: _searchDistance ? _distance : null,
+        ),
+      ]);
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
+    }
   }
 }

@@ -434,38 +434,43 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _save(BuildContext context) async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-    _formKey.currentState.save();
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<AuthProvider>(context, listen: false).signUp(_tempUser);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      final prefs = new Preferences();
-      if(prefs.token!="0" && prefs.token!=null){
-        if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-          Navigator.of(context).pushReplacementNamed("ask-location");
-        }else{
-          if(prefs.userTypeId==1){
-            Navigator.of(context).pushReplacementNamed("audience-events");
-          }else if(prefs.userTypeId==2){
-            Navigator.of(context).pushReplacementNamed("artist-events");
-          }else if(prefs.userTypeId==3){
-            Navigator.of(context).pushReplacementNamed("admin-events");
+    bool internet = await check(context);
+    if(internet){
+      if (!_formKey.currentState.validate()) {
+        return;
+      }
+      _formKey.currentState.save();
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<AuthProvider>(context, listen: false).signUp(_tempUser);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        final prefs = new Preferences();
+        if(prefs.token!="0" && prefs.token!=null){
+          if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
+            Navigator.of(context).pushReplacementNamed("ask-location");
           }else{
-            Navigator.of(context).pushReplacementNamed("audience-events");
+            if(prefs.userTypeId==1){
+              Navigator.of(context).pushReplacementNamed("audience-events");
+            }else if(prefs.userTypeId==2){
+              Navigator.of(context).pushReplacementNamed("artist-events");
+            }else if(prefs.userTypeId==3){
+              Navigator.of(context).pushReplacementNamed("admin-events");
+            }else{
+              Navigator.of(context).pushReplacementNamed("audience-events");
+            }
           }
         }
+      }else{ 
+        showErrorMessage(context, resp["message"]);
       }
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

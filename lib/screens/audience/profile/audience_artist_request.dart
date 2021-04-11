@@ -48,7 +48,12 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
   void didChangeDependencies() async {
     if (!_isLoaded) {
       _isLoading = true;
-      await Provider.of<GenresProvider>(context, listen: false).getArtisticGenres();
+      bool internet = await check(context);
+      if(internet){
+        await Provider.of<GenresProvider>(context, listen: false).getArtisticGenres();
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
       });
@@ -283,53 +288,65 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
   }
 
   void _openGalleryProfile(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _profileImage = File(pickedFile.path);
-    });
-    if(_profileImage != null) {
-      _errors['profileImage'] = '';
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+      if(_profileImage != null) {
+        _errors['profileImage'] = '';
+      }
+    }catch(error){
+      print(error);
     }
   }
 
   void _openGalleryCover(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _coverImage =  File(pickedFile.path);
-    });
-    
-    if(_coverImage != null) {
-      _errors['coverImage'] = '';
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _coverImage =  File(pickedFile.path);
+      });
+      if(_coverImage != null) {
+        _errors['coverImage'] = '';
+      }
+    }catch(error){
+      print(error);
     }
   }
 
   void _save(BuildContext context) async {
-    if (!_formKey.currentState.validate() || _profileImage == null || _coverImage == null || !_termAndConditions) {
-      setState(() {_showErrors = true;});
-      return;
+    bool internet = await check(context);
+    if(internet){
+      if (!_formKey.currentState.validate() || _profileImage == null || _coverImage == null || !_termAndConditions) {
+        setState(() {_showErrors = true;});
+        return;
+      }
+      _formKey.currentState.save();
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<ArtistsProvider>(context, listen: false).store(_tempArtist, _profileImage, _coverImage);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        Navigator.of(context).pushNamed("audience-profile");
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    _formKey.currentState.save();
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<ArtistsProvider>(context, listen: false).store(_tempArtist, _profileImage, _coverImage);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      Navigator.of(context).pushNamed("audience-profile");
-    }else{ 
-      showErrorMessage(context, resp["message"]);
-    }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

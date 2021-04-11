@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:parkapp/utils/functions.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/chat_provider.dart';
@@ -162,14 +163,17 @@ class _CustomBottomMenuState extends State<CustomBottomMenu> {
           highlightColor: Colors.transparent,
           splashColor: AppTheme.getTheme().primaryColor.withOpacity(0.2),
           onTap: () async {
-            if(putDot && text == "Mensajes"){
-              final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-              chatProvider.setRead(chatProvider.userConversation.id);
+            bool internet = await check(context);
+            if(internet){
+              if(putDot && text == "Mensajes"){
+                final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+                chatProvider.setRead(chatProvider.userConversation.id);
+              }
+              if(_preferences.userTypeId != 3){
+                Provider.of<ChatProvider>(context, listen: false).getUserConversation();
+              }
             }
             Navigator.pushNamed(context, route);
-            if(_preferences.userTypeId != 3){
-              Provider.of<ChatProvider>(context, listen: false).getUserConversation();
-            }
           },
           child: Column(
             children: <Widget>[

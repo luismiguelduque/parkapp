@@ -328,24 +328,29 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
   }
 
   void _save() async {
-    setState(() {
-      _isSaving = true;
-    });
-    Map resp;
-    if(_placeTemp.id != null){
-      resp = await Provider.of<PlacesProvider>(context, listen: false).updatePlace(_placeTemp);
+    bool internet = await check(context);
+    if(internet){
+      setState(() {
+        _isSaving = true;
+      });
+      Map resp;
+      if(_placeTemp.id != null){
+        resp = await Provider.of<PlacesProvider>(context, listen: false).updatePlace(_placeTemp);
+      }else{
+        resp = await Provider.of<PlacesProvider>(context, listen: false).savePlace(_placeTemp);
+      }
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        Navigator.of(context).pushNamed("settings-places-list");
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
     }else{
-      resp = await Provider.of<PlacesProvider>(context, listen: false).savePlace(_placeTemp);
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      Navigator.of(context).pushNamed("settings-places-list");
-    }else{ 
-      showErrorMessage(context, resp["message"]);
-    }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

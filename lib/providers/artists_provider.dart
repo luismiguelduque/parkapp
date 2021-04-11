@@ -220,7 +220,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   Future<void> getArtistsAudience(String search, int offset, int limit,) async {
     try {
       final Uri uri = Uri.https(apiUrl, "api/artists-audience", {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
       });
@@ -261,7 +261,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   Future<void> getArtistsRequests({String search, int offset, int limit}) async {
     try {
       final Uri uri = Uri.https(apiUrl, "api/artists/requests", {
-        "search": "$search",
+        "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
       });
@@ -300,7 +300,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   Future<void> getArtistsSuspensions({String search, int offset, int limit}) async {
     try {
       final Uri uri = Uri.https(apiUrl, "api/artists/suspensions", {
-        "search": "$search",
+        "search": search==null?"":search,
       });
       final response = await http.get(
         uri, 

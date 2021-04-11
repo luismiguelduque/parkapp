@@ -161,42 +161,47 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                   left: 7,
                   child: GestureDetector(
                     onTap: () async {
-                      if(!_isSaving){
-                        if(event.scheduled == 2){
-                          setState(() => _isSaving = true );
-                          final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                          final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
-                          await Future.wait([
-                            eventsProvider.getUserSheduledEvent(),
-                            eventsProvider.getAudienceEventsClose(),
-                            eventsProvider.getAudienceEventsNow(),
-                            eventsProvider.getAudienceEventsWeekend(),
-                            eventsProvider.getAudienceEventsAll()
-                          ]);
-                          setState(() => _isSaving = false );
-                          if (resp['success']) {
-                            showSuccessMessage(context, resp["message"]);
-                          }else{ 
-                            showErrorMessage(context, resp["message"]);
-                          }
-                        }else{
-                          setState(() => _isSaving = true );
-                          final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                          final resp = await eventsProvider.unScheduleEvent(event.id);
-                          await Future.wait([
-                            eventsProvider.getUserSheduledEvent(),
-                            eventsProvider.getAudienceEventsClose(),
-                            eventsProvider.getAudienceEventsNow(),
-                            eventsProvider.getAudienceEventsWeekend(),
-                            eventsProvider.getAudienceEventsAll()
-                          ]);
-                          setState(() => _isSaving = false );
-                          if (resp['success']) {
-                            showSuccessMessage(context, resp["message"]);
-                          }else{ 
-                            showErrorMessage(context, resp["message"]);
+                      bool internet = await check(context);
+                      if(internet){
+                        if(!_isSaving){
+                          if(event.scheduled == 2){
+                            setState(() => _isSaving = true );
+                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                            final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
+                            await Future.wait([
+                              eventsProvider.getUserSheduledEvent(),
+                              eventsProvider.getAudienceEventsClose(),
+                              eventsProvider.getAudienceEventsNow(),
+                              eventsProvider.getAudienceEventsWeekend(),
+                              eventsProvider.getAudienceEventsAll()
+                            ]);
+                            setState(() => _isSaving = false );
+                            if (resp['success']) {
+                              showSuccessMessage(context, resp["message"]);
+                            }else{ 
+                              showErrorMessage(context, resp["message"]);
+                            }
+                          }else{
+                            setState(() => _isSaving = true );
+                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                            final resp = await eventsProvider.unScheduleEvent(event.id);
+                            await Future.wait([
+                              eventsProvider.getUserSheduledEvent(),
+                              eventsProvider.getAudienceEventsClose(),
+                              eventsProvider.getAudienceEventsNow(),
+                              eventsProvider.getAudienceEventsWeekend(),
+                              eventsProvider.getAudienceEventsAll()
+                            ]);
+                            setState(() => _isSaving = false );
+                            if (resp['success']) {
+                              showSuccessMessage(context, resp["message"]);
+                            }else{ 
+                              showErrorMessage(context, resp["message"]);
+                            }
                           }
                         }
+                      }else{
+                        showErrorMessage(context, "No tienes conexion a internet");
                       }
                     },
                     child: Stack(

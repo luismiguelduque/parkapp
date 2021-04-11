@@ -28,9 +28,14 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
     if(!_isLoaded){
       _isLoading = true;
       final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
-      await Future.wait([
-        categoriesProvider.getEventCategory(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          categoriesProvider.getEventCategory(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -87,9 +92,14 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
         if(categoriesProvider.categories.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                categoriesProvider.getEventCategory(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  categoriesProvider.getEventCategory(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexion a internet");
+              }
             },
             child: Scrollbar(
               child: ListView.builder(
@@ -177,29 +187,34 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
-                              Map<String, dynamic> response;
-                              if( id != null) {
-                                response = await categoriesProvider.updateCategoryEvent(id, _description);
-                              } else {
-                                response = await categoriesProvider.storeEventCategory(_description);
-                              }
-                              setState((){
-                                _isSaving = false;
-                              });
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                if (id != null) {
-                                  showSuccessMessage(context, "La categoría del evento editada exitosamente");
-                                } else if (id == null) {
-                                  showSuccessMessage(context, "La categoría del evento creada exitosamente");
+                              bool internet = await check(context);
+                              if(internet){
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
+                                Map<String, dynamic> response;
+                                if( id != null) {
+                                  response = await categoriesProvider.updateCategoryEvent(id, _description);
+                                } else {
+                                  response = await categoriesProvider.storeEventCategory(_description);
                                 }
-                                categoriesProvider.getEventCategory();
-                              } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                setState((){
+                                  _isSaving = false;
+                                });
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  if (id != null) {
+                                    showSuccessMessage(context, "La categoría del evento editada exitosamente");
+                                  } else if (id == null) {
+                                    showSuccessMessage(context, "La categoría del evento creada exitosamente");
+                                  }
+                                  categoriesProvider.getEventCategory();
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
                               }
                             },
                           ),
@@ -263,20 +278,25 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
-                              Map<String, dynamic> response = await categoriesProvider.deleteCategoryEvent(id);
-                              setState((){
-                                _isSaving = false;
-                              });
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                showSuccessMessage(context, "La categoría del evento eliminada exitosamente");
-                                categoriesProvider.getEventCategory();
-                              } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                              bool internet = await check(context);
+                              if(internet){
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
+                                Map<String, dynamic> response = await categoriesProvider.deleteCategoryEvent(id);
+                                setState((){
+                                  _isSaving = false;
+                                });
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  showSuccessMessage(context, "La categoría del evento eliminada exitosamente");
+                                  categoriesProvider.getEventCategory();
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
                               }
                             },
                           ),

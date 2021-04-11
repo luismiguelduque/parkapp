@@ -410,40 +410,45 @@ class _SignInState extends State<SignIn> {
   }
 
   void _login(BuildContext context) async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-    _formKey.currentState.save();
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<AuthProvider>(context, listen: false).logIn(_email, _password);
-    print(resp['success']);
-    if (resp['success']) {
-      await _auth.signInAnonymously();
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      final prefs = new Preferences();
-      if(prefs.token!="0" && prefs.token!=null){
-        if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
-        }else{
-          if(prefs.userTypeId==1){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-          }else if(prefs.userTypeId==2){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
-          }else if(prefs.userTypeId==3){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
+    bool internet = await check(context);
+    if(internet){
+      if (!_formKey.currentState.validate()) {
+        return;
+      }
+      _formKey.currentState.save();
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<AuthProvider>(context, listen: false).logIn(_email, _password);
+      print(resp['success']);
+      if (resp['success']) {
+        await _auth.signInAnonymously();
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        final prefs = new Preferences();
+        if(prefs.token!="0" && prefs.token!=null){
+          if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
           }else{
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+            if(prefs.userTypeId==1){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+            }else if(prefs.userTypeId==2){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
+            }else if(prefs.userTypeId==3){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
+            }else{
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+            }
           }
         }
+      }else{ 
+        showErrorMessage(context, resp["message"]);
       }
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

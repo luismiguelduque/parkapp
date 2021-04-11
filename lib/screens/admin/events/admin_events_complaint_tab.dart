@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkapp/utils/constants.dart';
+import 'package:parkapp/utils/functions.dart';
 import 'package:parkapp/widgets/empty_list.dart';
 
 import 'package:provider/provider.dart';
@@ -48,9 +49,14 @@ class _AdminEventsComplaintTabState extends State<AdminEventsComplaintTab> {
         if(eventsProvider.adminEventsComplaints.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                eventsProvider.getAdminEventsComplained(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  eventsProvider.getAdminEventsComplained(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexion a internet");
+              }
             },
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo){
@@ -80,9 +86,14 @@ class _AdminEventsComplaintTabState extends State<AdminEventsComplaintTab> {
     _offset+=20;
     _limit+=20;
     final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-    await Future.wait([
-      eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
-    ]);
+    bool internet = await check(context);
+    if(internet){
+      await Future.wait([
+        eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
+      ]);
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
+    }
     _isLoadingPagination = false;
   }
 }

@@ -47,9 +47,14 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
       _isLoading = true;
       final artistId = ModalRoute.of(context).settings.arguments;
       final artistsProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        artistsProvider.getArtistDetail(artistId),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistsProvider.getArtistDetail(artistId),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexion a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -246,27 +251,37 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
   }
 
   _followArtist(int id) async {
-    setState(() => _isSaving = true );
-    final resp = await Provider.of<ArtistsProvider>(context, listen: false).followArtist(id);
-    await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+    bool internet = await check(context);
+    if(internet){
+      setState(() => _isSaving = true );
+      final resp = await Provider.of<ArtistsProvider>(context, listen: false).followArtist(id);
+      await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() => _isSaving = false );
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    setState(() => _isSaving = false );
   }
 
   _unFollowArtist(int id) async {
-    setState(() => _isSaving = true );
-    final resp = await Provider.of<ArtistsProvider>(context, listen: false).unFollowArtist(id);
-    await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+    bool internet = await check(context);
+    if(internet){
+      setState(() => _isSaving = true );
+      final resp = await Provider.of<ArtistsProvider>(context, listen: false).unFollowArtist(id);
+      await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() => _isSaving = false );
+    }else{
+      showErrorMessage(context, "No tienes conexion a internet");
     }
-    setState(() => _isSaving = false );
   }
 
   _bottomPage(BuildContext context, ArtistModel artist) {
@@ -431,26 +446,30 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                           textStyle: title3,
                           width: size.width,
                           onPressed: _isSaving ? null : () async {
-                            if (_rating > 0) {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final ordersProvider = Provider.of<ArtistsProvider>(context, listen: false);
-                              Map<String, dynamic> response = await ordersProvider.rateArtist(id, _description, _rating);
-                              await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
-                              setState((){
-                                _isSaving = false;
-                                _rating = 0;
-                              });
-
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                showSuccessMessage(context, "Calificación del artista guardada exitosamente");
+                            bool internet = await check(context);
+                            if(internet){
+                              if (_rating > 0) {
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final ordersProvider = Provider.of<ArtistsProvider>(context, listen: false);
+                                Map<String, dynamic> response = await ordersProvider.rateArtist(id, _description, _rating);
+                                await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
+                                setState((){
+                                  _isSaving = false;
+                                  _rating = 0;
+                                });
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  showSuccessMessage(context, "Calificación del artista guardada exitosamente");
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
                               } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                showErrorMessage(context, "Dale una calificación al artista");
                               }
-                            } else {
-                              showErrorMessage(context, "Dale una calificación al artista");
+                            }else{
+                              showErrorMessage(context, "No tienes conexion a internet");
                             }
                           },
                         ),
@@ -515,24 +534,29 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              if (_report.toString().length > 0) {
-                                setState((){
-                                  _isSaving = true;
-                                });
-                                final ordersProvider = Provider.of<ArtistsProvider>(context, listen: false);
-                                Map<String, dynamic> response = await ordersProvider.reportArtist(id, _report);
-                                await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
-                                setState((){
-                                  _isSaving = false;
-                                }); 
-                                Navigator.pop(context);
-                                if (response['success']) {
-                                  showSuccessMessage(context, "Artista denunciado exitosamente");
+                              bool internet = await check(context);
+                              if(internet){
+                                if (_report.toString().length > 0) {
+                                  setState((){
+                                    _isSaving = true;
+                                  });
+                                  final ordersProvider = Provider.of<ArtistsProvider>(context, listen: false);
+                                  Map<String, dynamic> response = await ordersProvider.reportArtist(id, _report);
+                                  await Provider.of<ArtistsProvider>(context, listen: false).getArtistDetail(id);
+                                  setState((){
+                                    _isSaving = false;
+                                  }); 
+                                  Navigator.pop(context);
+                                  if (response['success']) {
+                                    showSuccessMessage(context, "Artista denunciado exitosamente");
+                                  } else {
+                                    showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                  }
                                 } else {
-                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                  showErrorMessage(context, "Indica la razón");
                                 }
-                              } else {
-                                showErrorMessage(context, "Indica la razón");
+                              }else{
+                                showErrorMessage(context, "No tienes conexion a internet");
                               }
                             },
                           ),
