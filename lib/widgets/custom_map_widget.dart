@@ -31,7 +31,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
   bool _isLoaded = false;
 
-   @override
+  @override
   void dispose() {
     mapController.dispose();
     super.dispose();

@@ -139,7 +139,7 @@ class _SignInState extends State<SignIn> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        
+                        /*
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
@@ -176,7 +176,7 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
-                        
+                        */
                         SizedBox(height: 20,),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
