@@ -52,7 +52,7 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
       if(internet){
         await Provider.of<GenresProvider>(context, listen: false).getArtisticGenres();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -278,9 +278,9 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Row(
           children: [
-            Icon(icon, size: 32, color: AppTheme.getTheme().colorScheme.secondary,),
-            SizedBox(width: 15,),
-            Text(text, style: TextStyle(fontSize: 18),),
+            Icon(icon, size: 25, color: AppTheme.getTheme().colorScheme.secondary,),
+            SizedBox(width: 10,),
+            Text(text, style: TextStyle(fontSize: 16),),
           ],
         ),
       ),
@@ -346,7 +346,7 @@ class _AudienceArtistRequestState extends State<AudienceArtistRequest> {
         _isSaving = false;
       });
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
   }
 }

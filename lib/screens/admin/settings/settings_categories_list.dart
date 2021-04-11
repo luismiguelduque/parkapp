@@ -34,7 +34,7 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
           categoriesProvider.getEventCategory(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -71,7 +71,7 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                       },
                       icon: Icon(Icons.arrow_back),
                     ),
-                    Text("Categorías de eventos", style: title2.copyWith(color: greyLightColor),),
+                    Text("Categorías de eventos", style: title3.copyWith(color: greyLightColor),),
                   ],
                 )
               ),
@@ -98,7 +98,7 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                   categoriesProvider.getEventCategory(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: Scrollbar(
@@ -214,7 +214,7 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                                   showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
                                 }
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),
@@ -296,7 +296,7 @@ class _SettingsCategoriesListState extends State<SettingsCategoriesList> {
                                   showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
                                 }
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),

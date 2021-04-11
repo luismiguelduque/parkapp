@@ -49,7 +49,7 @@ class _AudienceEventsScreenState extends State<AudienceEventsScreen> {
         usersProvider.setUserFCM(_phoneToken);
         sendFirstMessage();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;

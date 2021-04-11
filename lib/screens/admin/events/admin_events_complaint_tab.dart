@@ -55,7 +55,7 @@ class _AdminEventsComplaintTabState extends State<AdminEventsComplaintTab> {
                   eventsProvider.getAdminEventsComplained(),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: NotificationListener<ScrollNotification>(
@@ -92,7 +92,7 @@ class _AdminEventsComplaintTabState extends State<AdminEventsComplaintTab> {
         eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
       ]);
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
     _isLoadingPagination = false;
   }

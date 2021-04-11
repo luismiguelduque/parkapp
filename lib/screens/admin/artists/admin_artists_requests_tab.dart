@@ -67,7 +67,7 @@ class _AdminArtistsRequestsTabState extends State<AdminArtistsRequestsTab> {
                   artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: NotificationListener<ScrollNotification>(

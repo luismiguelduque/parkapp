@@ -34,7 +34,7 @@ class _AdminProfoleScreenState extends State<AdminProfoleScreen> {
       if(internet){
         await Provider.of<AuthProvider>(context, listen: false).getUser();
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -230,7 +230,7 @@ class _AdminProfoleScreenState extends State<AdminProfoleScreen> {
                                     showErrorMessage(context, response['message']);
                                   }
                                 }else{
-                                  showErrorMessage(context, "No tienes conexion a internet");
+                                  showErrorMessage(context, "No tienes conexión a internet");
                                 }
                               },
                             ),

@@ -40,7 +40,7 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
           chatProvider.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -104,7 +104,7 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
                                 chatProvier.getAdminConversation(value, _offsetArtist, _limitArtist, 2),
                               ]);
                             }else{
-                              showErrorMessage(context, "No tienes conexion a internet");
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                             setState(() { 
                               _isLoadingSearch = false;
@@ -126,7 +126,7 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
                                 chatProvier.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
                               ]);
                             }else{
-                              showErrorMessage(context, "No tienes conexion a internet");
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                             if(this.mounted) {
                               setState(() { _isLoadingSearch = false; });
@@ -346,7 +346,7 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
         chatProvier.getAdminConversation(null, _offset, _limit, userType),
       ]);
     }else{
-      showErrorMessage(context, "No tienes conexion a internet");
+      showErrorMessage(context, "No tienes conexión a internet");
     }
     _isLoadingPagination = false;
   }

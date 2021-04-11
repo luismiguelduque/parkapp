@@ -41,7 +41,7 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
           placesProvider.getPlaces(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _isLoading = false;
@@ -103,7 +103,7 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
                                   eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: value),
                                 ]);
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                               setState(() { 
                                 _isLoadingSearch = false;
@@ -126,7 +126,7 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
                                   eventsProvider.getAdminEventsComplained(limit: _limit, offset: _offset, search: null),
                                 ]);
                               }else{
-                                showErrorMessage(context, "No tienes conexion a internet");
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                               if(this.mounted) {
                                 setState(() { _isLoadingSearch = false; });
@@ -170,13 +170,13 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
         unselectedLabelColor: Colors.grey,
         tabs: [
           Tab(
-            child: Text("Todos", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Todos", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
           Tab(
-            child: Text("Pendientes", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Pendientes", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
           Tab(
-            child: Text("Denunciados", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Denuncias", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
         ],
       ),
