@@ -3,6 +3,7 @@
    <application
         android:label="Park App"
         android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true"
         android:allowBackup = "false">
         <activity
             android:requestLegacyExternalStorage="true"

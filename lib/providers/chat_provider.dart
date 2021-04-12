@@ -39,7 +39,10 @@ class ChatProvider extends ChangeNotifier {
   Future<void> getAdminAllConversation() async {
     
     try {
-      final Uri uri = Uri.https(apiUrl, "api/conversations", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations", {
+        "offset": "0",
+        "limit": "1000"
+      }) : Uri.http(apiUrl, "api/conversations", {
         "offset": "0",
         "limit": "1000"
       });
@@ -73,7 +76,12 @@ class ChatProvider extends ChangeNotifier {
   Future<void> getAdminConversation(String search, int offset, int limit, int userType) async {
     
     try {
-      final Uri uri = Uri.https(apiUrl, "api/conversations", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations", {
+        "search": "$search",
+        "offset": "$offset",
+        "limit": "$limit",
+        "user_type": "$userType"
+      }) : Uri.http(apiUrl, "api/conversations", {
         "search": "$search",
         "offset": "$offset",
         "limit": "$limit",
@@ -126,7 +134,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> getUserConversation() async {
-    final Uri uri = Uri.https(apiUrl, "api/conversations/user-session", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations/user-session", {}) : Uri.http(apiUrl, "api/conversations/user-session", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -155,7 +163,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> storeConversation(String conversationId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/conversations", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations", {}) : Uri.http(apiUrl, "api/conversations", {});
     try {
       final response = await http.post(uri, headers: {
         'Content-type': 'application/json',
@@ -197,7 +205,7 @@ class ChatProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> updateLastMessage(int conversationId, String message, int sender, int receiver) async {
     Map<String, dynamic> respJson = {};
     final bool isAdmin = _preferences.userTypeId == 3;
-    final Uri uri = Uri.https(apiUrl, "api/conversations/last-message", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations/last-message", {}) : Uri.http(apiUrl, "api/conversations/last-message", {});
     try {
       final response = await http.post(
         uri, 
@@ -242,7 +250,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> setRead(int conversationId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/conversations/read-messages?id=$conversationId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations/read-messages?id=$conversationId", {}) : Uri.http(apiUrl, "api/conversations/read-messages?id=$conversationId", {});
     try {
       final response = await http.get(
         uri, 

@@ -46,14 +46,18 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   }
   
   void _animateMapCamera() async {
-    if(this.mounted) {
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
-          zoom: 14.0,
-        ),
-      ));
+    try{
+      if(this.mounted) {
+        final GoogleMapController controller = await _controller.future;
+        controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
+            zoom: 14.0,
+          ),
+        ));
+      }
+    }catch(error){
+      print(error);
     }
   }
 

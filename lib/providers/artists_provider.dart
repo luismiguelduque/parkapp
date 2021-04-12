@@ -176,7 +176,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<void> getArtists({String search, int offset, int limit}) async {
     try {
-      final Uri uri = Uri.https(apiUrl, "api/artists", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists", {
+        "search": search==null?"":search,
+        "offset": "$offset",
+        "limit": "$limit"
+      }) : Uri.http(apiUrl, "api/artists", {
         "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
@@ -219,7 +223,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<void> getArtistsAudience(String search, int offset, int limit,) async {
     try {
-      final Uri uri = Uri.https(apiUrl, "api/artists-audience", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists-audience", {
+        "search": search==null?"":search,
+        "offset": "$offset",
+        "limit": "$limit"
+      }) : Uri.http(apiUrl, "api/artists", {
         "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
@@ -260,7 +268,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<void> getArtistsRequests({String search, int offset, int limit}) async {
     try {
-      final Uri uri = Uri.https(apiUrl, "api/artists/requests", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/requests", {
+        "search": search==null?"":search,
+        "offset": "$offset",
+        "limit": "$limit"
+      }) : Uri.http(apiUrl, "api/artists/requests", {
         "search": search==null?"":search,
         "offset": "$offset",
         "limit": "$limit"
@@ -299,7 +311,9 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<void> getArtistsSuspensions({String search, int offset, int limit}) async {
     try {
-      final Uri uri = Uri.https(apiUrl, "api/artists/suspensions", {
+      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/suspensions", {
+        "search": search==null?"":search,
+      }) : Uri.http(apiUrl, "api/artists/suspensions", {
         "search": search==null?"":search,
       });
       final response = await http.get(
@@ -336,7 +350,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> activateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/activate/$artistId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/activate/$artistId", {}) : Uri.http(apiUrl, "api/artists/activate/$artistId", {});
     try {
       final response = await http.post(
         uri, 
@@ -375,7 +389,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> rejectArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/reject/$artistId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/reject/$artistId", {}) : Uri.http(apiUrl, "api/artists/reject/$artistId", {});
     try {
       final response = await http.post(
         uri, 
@@ -411,7 +425,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
 
   Future<void> getArtistDetail(int id) async {
-    final Uri uri = Uri.https(apiUrl, "api/artists/$id", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/$id", {}) : Uri.http(apiUrl, "api/artists/$id", {});
     try {
       final response = await http.get(
         uri, 
@@ -434,7 +448,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
   }
   
   Future<void> getArtistIndicators() async {
-    final Uri uri = Uri.https(apiUrl, "api/indicators/artists", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/indicators/artists", {}) : Uri.http(apiUrl, "api/indicators/artists", {});
     try {
       final response = await http.get(
         uri, 
@@ -458,7 +472,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> suspendArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/suspend/$artistId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/suspend/$artistId", {}) : Uri.http(apiUrl, "api/artists/suspend/$artistId", {});
     try {
       final response = await http.put(
         uri, 
@@ -494,7 +508,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> reactivateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/reactivate/$artistId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/reactivate/$artistId", {}) : Uri.http(apiUrl, "api/artists/reactivate/$artistId", {});
     try {
       final response = await http.put(
         uri, 
@@ -530,7 +544,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> deleteArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/delete/$artistId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/delete/$artistId", {}) : Uri.http(apiUrl, "api/artists/delete/$artistId", {});
     try {
       final response = await http.delete(
         uri, 
@@ -566,7 +580,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> reportArtist(int eventId, String reason) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists_complaint", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists_complaint", {}) : Uri.http(apiUrl, "api/artists_complaint", {});
     try {
       final response = await http.post(
         uri, 
@@ -607,7 +621,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> followArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/follow", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/follow", {}) : Uri.http(apiUrl, "api/artists/follow", {});
     try {
       final response = await http.post(
         uri, 
@@ -646,7 +660,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> unFollowArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/unfollow", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/unfollow", {}) : Uri.http(apiUrl, "api/artists/unfollow", {});
     try {
       final response = await http.post(
         uri, 
@@ -685,7 +699,7 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> rateArtist(int artistId, String observation, double rating) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/artists/add-user-rating", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/add-user-rating", {}) : Uri.http(apiUrl, "api/artists/add-user-rating", {});
     try {
       final response = await http.post(
         uri, 

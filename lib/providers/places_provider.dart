@@ -40,7 +40,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<void> getPlaces() async {
-    final Uri uri = Uri.https(apiUrl, "api/places", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places", {}) : Uri.http(apiUrl, "api/places", {});
     try {
       final response = await http.get(
         uri, 
@@ -68,7 +68,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<void> getProvinces() async {
-    final Uri uri = Uri.https(apiUrl, "api/provinces", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/provinces", {}) : Uri.http(apiUrl, "api/provinces", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -95,7 +95,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<void> getCities() async {
-    final Uri uri = Uri.https(apiUrl, "api/cities", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/cities", {}) : Uri.http(apiUrl, "api/cities", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -120,7 +120,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<void> getNeighborhoods() async {
-    final Uri uri = Uri.https(apiUrl, "api/neighborhoods", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/neighborhoods", {}) : Uri.http(apiUrl, "api/neighborhoods", {});
     try {
       final response = await http.get(uri, headers: {
         'Content-type': 'application/json',
@@ -146,7 +146,7 @@ class PlacesProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> updateUserLocation(int provinceId, int cityId, int neighborhoodId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/users/update-location", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/users/update-location", {}) : Uri.http(apiUrl, "api/users/update-location", {});
     try{
       final response = await http.post(
         uri, 
@@ -195,7 +195,7 @@ class PlacesProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> savePlace(PlaceModel placeModel) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/places", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places", {}) : Uri.http(apiUrl, "api/places", {});
     try {
       final response = await http.post(
         uri, 
@@ -243,7 +243,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> updatePlace(PlaceModel placeModel) async {
-    final Uri uri = Uri.https(apiUrl, "api/places/${placeModel.id}", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places/${placeModel.id}", {}) : Uri.http(apiUrl, "api/places/${placeModel.id}", {});
     Map<String, dynamic> respJson = {};
     try {
       final response = await http.put(
@@ -292,7 +292,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> deletePlace(int placeId) async {
-    final Uri uri = Uri.https(apiUrl, "api/places/$placeId", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places/$placeId", {}) : Uri.http(apiUrl, "api/places/$placeId", {});
     Map<String, dynamic> respJson = {};
     try {
       final response = await http.delete(uri, headers: {
