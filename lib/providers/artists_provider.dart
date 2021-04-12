@@ -55,7 +55,7 @@ class ArtistsProvider extends ChangeNotifier {
 
   Future<Map<String, dynamic>> store(ArtistModel artist, File profileImage, File coverImage) async {
     Map<String, dynamic> respJson = {};
-    final url = 'https://$apiUrl/api/artists';
+    final url = developmentMode ? 'https://$apiUrl/api/artists' : 'http://$apiUrl/api/artists';
     try{
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);
@@ -116,7 +116,7 @@ class ArtistsProvider extends ChangeNotifier {
 
 Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage, File coverImage, int artistId) async {
     Map<String, dynamic> respJson = {};
-    final url = 'https://$apiUrl/api/artists/$artistId'; 
+    final url = developmentMode ? 'https://$apiUrl/api/artists/$artistId' : 'http://$apiUrl/api/artists/$artistId'; 
     try{
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);

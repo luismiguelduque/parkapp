@@ -432,7 +432,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> store(EventModel event, File profileImage, File coverImage, List<int> categories, List<File> images) async {
-    final url = "https://$apiUrl/api/events";
+    final url = developmentMode ? "https://$apiUrl/api/events" :"http://$apiUrl/api/events";
     Map<String, dynamic> respJson = {};
     try{
       var postUri = Uri.parse(url);
@@ -496,7 +496,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> updateEvent(EventModel event, File profileImage, File coverImage, List<int> categories, int eventId, List<File> images) async {
-    final url = "https://$apiUrl/api/events/$eventId";
+    final url =  developmentMode ? "https://$apiUrl/api/events/$eventId" : "http://$apiUrl/api/events/$eventId";
     Map<String, dynamic> respJson = {};
     try{
       var postUri = Uri.parse(url);
