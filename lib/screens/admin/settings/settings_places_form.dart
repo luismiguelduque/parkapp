@@ -128,7 +128,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 },
                 icon: Icon(Icons.arrow_back),
               ),
-              Text("$_title", style: title1.copyWith(color: greyLightColor),),
+              Text("$_title", style: title3.copyWith(color: greyLightColor),),
             ],
           ),
         ],
