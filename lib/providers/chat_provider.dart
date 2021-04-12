@@ -249,8 +249,13 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> setRead(int conversationId) async {
-    Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations/read-messages?id=$conversationId", {}) : Uri.http(apiUrl, "api/conversations/read-messages?id=$conversationId", {});
+    Map<String, dynamic> respJson = {}; 
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/conversations/read-messages", {
+      "id": "$conversationId"
+    }) : Uri.http(apiUrl, "api/conversations/read-messages", {
+      "id": "$conversationId"
+    });
+    print(uri);
     try {
       final response = await http.get(
         uri, 
@@ -261,6 +266,8 @@ class ChatProvider extends ChangeNotifier {
         }
       );
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      print("setRead");
+      print(decodedResponse);
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
