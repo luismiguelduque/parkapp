@@ -194,6 +194,7 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> savePlace(PlaceModel placeModel) async {
+    print("savePlace");
     Map<String, dynamic> respJson = {};
     final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places", {}) : Uri.http(apiUrl, "api/places", {});
     try {
@@ -216,12 +217,14 @@ class PlacesProvider extends ChangeNotifier {
         }),
       );
       final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
-      print("decodedResponse");
+      print("decodedResponse savePlace");
       print(decodedResponse);
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
+        print("-----");
+        print(decodedResponse['message']);
         if(decodedResponse['message'] == 'The given data was invalid'){
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
@@ -243,11 +246,12 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> updatePlace(PlaceModel placeModel) async {
+    print("updatePlace");
     final Uri uri =developmentMode ? Uri.https(apiUrl, "api/places/${placeModel.id}", {}) : Uri.http(apiUrl, "api/places/${placeModel.id}", {});
     Map<String, dynamic> respJson = {};
     try {
       final response = await http.put(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',

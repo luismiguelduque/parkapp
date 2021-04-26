@@ -77,16 +77,17 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         },
         onTap: widget.allowMarker == true ? (value){
           widget.onCLick(value);
-          if(widget.markers != null){
+          if(widget.markers != null || widget.allowMarker){
+            widget.markers.add(Marker(
+              markerId: MarkerId(value.toString()),
+              position: value,
+              infoWindow: InfoWindow(
+                title: 'I am a marker',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+            ));
             setState(() {
-              widget.markers.add(Marker(
-                markerId: MarkerId(value.toString()),
-                position: value,
-                infoWindow: InfoWindow(
-                  title: 'I am a marker',
-                ),
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
-              ));
+              
             });
           }
         }

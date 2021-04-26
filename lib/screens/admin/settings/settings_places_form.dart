@@ -44,7 +44,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
       if (placeId != null) {
         setState(() {
           _placeTemp = Provider.of<PlacesProvider>(context, listen: false).places.firstWhere((item) => item.id == placeId);
-          _title = "Editar lugar de eventos";
+          _title = "Lugar de eventos";
           _markers.add(
             Marker(
               markerId: MarkerId('${_placeTemp.id}'),
@@ -68,7 +68,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
         });
       }else{
         setState(() {
-          _title = "Crear un lugar de eventos";
+          _title = "Lugar de eventos";
         });
       }
       
@@ -131,6 +131,16 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
               Text("$_title", style: title3.copyWith(color: greyLightColor),),
             ],
           ),
+          CustomGeneralButton(
+            onPressed: (){
+              _save();
+            },
+            loading: _isSaving,
+            color: AppTheme.getTheme().colorScheme.primary,
+            text: "Guardar",
+            width: 100,
+            height: 45,
+          ),
         ],
       )
     );
@@ -142,17 +152,20 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
+            SizedBox(height: 4.0,),
             CustomTextfield(
               height: 50,
               value: _placeTemp.name,
+              maxLength: 100,
               label: 'Nombre',
               onChanged: (value){
                 _placeTemp.name = value;
               },
             ),
-            SizedBox(height: 11.0,),
+            SizedBox(height: 12.0,),
             CustomTextfield(
               height: 50,
+              maxLength: 250,
               value: _placeTemp.description,
               label: 'Descripción',
               maxLines: 2,
@@ -160,22 +173,22 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 _placeTemp.description = value;
               },
             ),
-            SizedBox(height: 10.0,),
             _iconFieldItem(Icons.location_on, "${ _placeTemp.neighborhood.id == null ? 'Barrio' : _placeTemp.neighborhood.name}", _showDialogPlaces),
-            SizedBox(height: 8.0,),
             CustomTextfield(
               height: 50,
               value: _placeTemp.address,
               label: 'Dirección',
+              maxLength: 100,
               onChanged: (value){
                 _placeTemp.address = value;
               },
             ),
-            SizedBox(height: 11.0,),
+            SizedBox(height: 12.0,),
             Container(
               width: double.infinity,
-              height: 220,
+              height: 180,
               child: _showMap ? CustomMapWidget(
+                allowMarker: true,
                 useLocation: _placeTemp.id == null,
                 markers: [
                   if(_placeTemp.id != null)
@@ -187,11 +200,10 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                         title: '${_placeTemp.name}'
                       )
                     ),
-                  
-                  
+                  if(_markers.length>0 && _placeTemp.id == null)
+                    _markers[0]
                 ],
                 onCLick: (val){
-                  print(val);
                   _markers.add(
                     Marker(
                       markerId: MarkerId('${_placeTemp.id}'),
@@ -214,7 +226,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                 }
               ) : Container(),
             ),
-            SizedBox(height: 11.0,),
+            SizedBox(height: 12.0,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -247,23 +259,6 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                   onChanged: (value){
                     _placeTemp.dailyLimit = int.parse(value) ;
                   },
-
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomGeneralButton(
-                  onPressed: (){
-                    _save();
-                  },
-                  loading: _isSaving,
-                  color: AppTheme.getTheme().colorScheme.primary,
-                  text: "Guardar",
-                  width: 220,
-                  height: 50,
                 ),
               ],
             ),
@@ -351,6 +346,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
 
   void _save() async {
     bool internet = await check(context);
+    print("test");
     if(internet){
       setState(() {
         _isSaving = true;
