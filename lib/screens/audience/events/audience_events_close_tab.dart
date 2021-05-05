@@ -62,7 +62,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Eventos cerca de ti", style: TextStyle(color: AppTheme.getTheme().colorScheme.secondary, fontSize: 18, fontWeight: FontWeight.w500),),
+                    Text("Eventos de hoy", style: TextStyle(color: AppTheme.getTheme().colorScheme.secondary, fontSize: 18, fontWeight: FontWeight.w500),),
                     /*
                     Row(
                       children: [
