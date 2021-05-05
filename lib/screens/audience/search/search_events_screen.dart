@@ -250,14 +250,35 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                 ],
               ),
               SizedBox(height: 15,), 
-              CustomTextfield(
-                onChanged: (value){
-                  _search = value;
-                  setState(() => _isLoading = true );
-                  _getItems();
-                  setState(() => _isLoading = false );
-                },
-                label: "Buscar",
+              Row(
+                children: [
+                  SizedBox(width: 8,),
+                  Expanded(
+                    child: CustomTextfield(
+                      onChanged: (value){
+                        _search = value;
+                      },
+                      label: "Escribir nombre de evento",
+                    ),
+                  ),
+                  SizedBox(width: 8,),
+                  _isLoading ? CircularProgressIndicator() : CustomGeneralButton(
+                    height: 45,
+                    loading: _isLoading,
+                    text: "Buscar",
+                    onPressed: (){
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      _getItems();
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                    color: secondaryColor,
+                  ),
+                  SizedBox(width: 8,),
+                ],
               ),
               SizedBox(height: 20,),
               Expanded(
@@ -309,7 +330,17 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                 ),
               ),
             );
-          return EmptyList(color: greyLightColor,);
+          return Container(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.filter_list, color: greyColor, size: 35,),
+                  Text("No hemos encontrado ningún evento", style: text3.copyWith(color: greyColor),),
+                ],
+              ),
+            ),
+          );
         },
       ),
     );

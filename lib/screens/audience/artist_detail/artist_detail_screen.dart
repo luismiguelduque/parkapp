@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
@@ -338,17 +341,44 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
               SizedBox(height: 10,),
               Text("Imágenes:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.getTheme().colorScheme.secondary),),
               SizedBox(height: 5,),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: 100,
-                  height: 110,
-                  child: FadeInImage(
-                    image: artist.profileImage != null ? NetworkImage(artist.profileImage) : AssetImage("assets/images/no-image.png"),
-                    placeholder: AssetImage("assets/images/loading.gif"),
-                    fit: BoxFit.contain,
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      _showDialog(context, artist.profileImage);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: 100,
+                        height: 110,
+                        child: FadeInImage(
+                          image: artist.profileImage != null ? NetworkImage(artist.profileImage) : AssetImage("assets/images/no-image.png"),
+                          placeholder: AssetImage("assets/images/loading.gif"),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(width: 10,),
+                  GestureDetector(
+                    onTap: (){
+                      _showDialog(context, artist.coverImage);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: 100,
+                        height: 110,
+                        child: FadeInImage(
+                          image: artist.profileImage != null ? NetworkImage(artist.coverImage) : AssetImage("assets/images/no-image.png"),
+                          placeholder: AssetImage("assets/images/loading.gif"),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               if(artist.urlVideo != null)
                 _videoSection(artist),
@@ -357,6 +387,60 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
           ),
         )
       ),
+    );
+  }
+
+  _showDialog(BuildContext context, String image) {
+    final size = MediaQuery.of(context).size;
+    if(Platform.isAndroid){
+      return showDialog(
+        context: context, 
+        builder: (context){
+          return AlertDialog(
+            content: Container(
+              height: size.height*0.4,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(image),
+                  fit: BoxFit.contain
+                )
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                elevation: 5,
+                child: Text("Cerrar"),
+                textColor: Colors.grey,
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        },
+      );
+    }
+
+    showCupertinoDialog(
+      context: context, 
+      builder: (_){
+        return CupertinoAlertDialog(
+          content: Container(
+            height: size.height*0.4,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(image),
+                fit: BoxFit.contain
+              )
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              child: Text("Cerrar"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      }
     );
   }
 

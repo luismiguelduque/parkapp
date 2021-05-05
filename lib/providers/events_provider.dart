@@ -210,8 +210,8 @@ class EventsProvider extends ChangeNotifier {
     if(fromTime != null) fromTime = "${fromTime.hour}:${fromTime.minute}";
     if(toTime != null) toTime = "${toTime.hour}:${toTime.minute}";
     //var url = "$apiUrl/events/audience/all?offset=$offset&limit=$limit&fromDate=$fromDate&toDate=$toDate&fromTime=$fromTime&toTime=$toTime&neighborhoods=$neighborhoods&artists=$artists&rating=$rating&categories=$categories&distance=$distance";
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists", {
-      "search": search==null?"":search,
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/events/audience/all", {
+      "search": "$search",
       "offset": "$offset",
       "limit": "$limit",
       "fromDate": "$fromDate",
@@ -223,8 +223,8 @@ class EventsProvider extends ChangeNotifier {
       "rating": "$rating",
       "categories": "$categories",
       "distance": "$distance"
-    }) : Uri.http(apiUrl, "api/artists", {
-      "search": search==null?"":search,
+    }) : Uri.http(apiUrl, "api/events/audience/all", {
+      "search": "$search",
       "offset": "$offset",
       "limit": "$limit",
       "fromDate": "$fromDate",
@@ -237,6 +237,8 @@ class EventsProvider extends ChangeNotifier {
       "categories": "$categories",
       "distance": "$distance"
     });
+    print("buscando");
+    print(uri);
     try {
       final response = await http.get(
         uri, 

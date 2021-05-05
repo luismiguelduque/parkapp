@@ -39,7 +39,7 @@ const text4 = TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontFamily:
 const text5 = TextStyle(fontSize: 12, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
 const text6 = TextStyle(fontSize: 9, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
 
-const bool developmentMode = false;
+const bool developmentMode = true;
 const apiUrl = developmentMode ? "parkapp.alternativasinteligentes.com" : "ec2-54-184-105-143.us-west-2.compute.amazonaws.com";
 
 const igClientId = "429845871678494";
