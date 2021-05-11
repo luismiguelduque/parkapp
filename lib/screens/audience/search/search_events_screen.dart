@@ -99,9 +99,35 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(width: 3,),
                       Text("Filtrar", style: title1.copyWith(color: greyLightColor),),
+                      CustomGeneralButton(
+                        onPressed: () async {
+                          setState(() => _isLoading = true );
+                          _search = null;
+                          _fromDate = null;
+                          _toDate = null;
+                          _fromTime = null;
+                          _toTime = null;
+                          _neighborhoodsName = null;
+                          _neighborhoods = null;
+                          _artist = null;
+                          _artistName = null;
+                          _rating = null;
+                          _categories = [];
+                          _distance = 10;
+                          _searchDistance = false;
+                          _getItems();
+                          Navigator.pop(context);
+                          setState(() => _isLoading = false );
+                        },
+                        loading: _isSaving,
+                        color: greyVeryLightColor,
+                        text: "Limpiar filtros",
+                        width: 135,
+                        height: 40,
+                      ),  
                     ],
                   ),
                   SizedBox(height: 10,),
@@ -132,8 +158,8 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                   _iconFieldItem(Icons.location_on, "${_neighborhoods == null ? 'Barrio' : _neighborhoodsName}", _showDialogPlaces),
                   Divider(),
                   _iconFieldItem(Icons.person, "${_artist == null ? 'Artista' : _artistName}", _showDialogArtists),
-                  Divider(),
-                  _iconFieldItem(Icons.star, _rating == null ? 'Calificación' : "$_rating Estrellas" , _showDialogRating),
+                  //Divider(),
+                  //_iconFieldItem(Icons.star, _rating == null ? 'Calificación' : "$_rating Estrellas" , _showDialogRating),
                   Divider(),
                   Container(
                     child: Column(
@@ -202,6 +228,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                         onPressed: () async {
                           setState(() => _isLoading = true );
                           _getItems();
+                          Navigator.pop(context);
                           setState(() => _isLoading = false );
                         },
                         loading: _isSaving,
