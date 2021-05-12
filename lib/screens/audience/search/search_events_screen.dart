@@ -118,15 +118,14 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                           _categories = [];
                           _distance = 10;
                           _searchDistance = false;
-                          _getItems();
-                          Navigator.pop(context);
+                          await _getItems();
                           setState(() => _isLoading = false );
                         },
-                        loading: _isSaving,
-                        color: greyVeryLightColor,
+                        loading: _isLoading,
+                        color: AppTheme.getTheme().colorScheme.primary,
                         text: "Limpiar filtros",
                         width: 135,
-                        height: 40,
+                        height: 40, 
                       ),  
                     ],
                   ),
@@ -227,11 +226,11 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                       CustomGeneralButton(
                         onPressed: () async {
                           setState(() => _isLoading = true );
-                          _getItems();
+                          await _getItems();
                           Navigator.pop(context);
                           setState(() => _isLoading = false );
                         },
-                        loading: _isSaving,
+                        loading: _isLoading,
                         color: AppTheme.getTheme().colorScheme.primary,
                         text: "Aplicar",
                         width: 200,
@@ -245,9 +244,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
           ),
         ),
       ),
-      body: _isLoading ? Center(
-          child: CircularProgressIndicator(),
-        ) : SafeArea(
+      body: SafeArea(
         child: Container(
           height: double.infinity,
           width: double.infinity,
@@ -289,15 +286,16 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                     ),
                   ),
                   SizedBox(width: 8,),
-                  _isLoading ? CircularProgressIndicator() : CustomGeneralButton(
+                  CustomGeneralButton(
                     height: 45,
                     loading: _isLoading,
                     text: "Buscar",
-                    onPressed: (){
+                    width: 100,
+                    onPressed: () async {
                       setState(() {
                         _isLoading = true;
                       });
-                      _getItems();
+                      await _getItems();
                       setState(() {
                         _isLoading = false;
                       });
@@ -319,58 +317,60 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
   }
 
   Widget _eventsList(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Consumer<EventsProvider>(
-        builder: (ctx, eventsProvider, _){
-          if(eventsProvider.audienceEventsAll.length > 0)
-            return RefreshIndicator(
-              onRefresh: () async {
-                _getItems();
-              },
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollInfo){
-                  if (!_isLoadingPagination && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                    if(eventsProvider.audienceAllEventstotalItems > _limit){
-                      paginacion(context);
-                    }
-                    return true;
-                  }
-                  return false;
+    return _isLoading ? Center(
+          child: CircularProgressIndicator(),
+        ) : Container(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Consumer<EventsProvider>(
+          builder: (ctx, eventsProvider, _){
+            if(eventsProvider.audienceEventsAll.length > 0)
+              return RefreshIndicator(
+                onRefresh: () async {
+                  _getItems();
                 },
-                child: Scrollbar(
-                  child: ListView.builder(
-                    itemCount: eventsProvider.audienceEventsAll.length,
-                    itemBuilder: (context, index) {
-                      if(index+1 == eventsProvider.audienceEventsAll.length){
-                        return Column(
-                          children: [
-                            EventItem(event: eventsProvider.audienceEventsAll[index],),
-                            SizedBox(height: 150,)
-                          ],
-                        );
-                      }else{
-                        return EventItem(event: eventsProvider.audienceEventsAll[index],);
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo){
+                    if (!_isLoadingPagination && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                      if(eventsProvider.audienceAllEventstotalItems > _limit){
+                        paginacion(context);
                       }
+                      return true;
                     }
-                  )
+                    return false;
+                  },
+                  child: Scrollbar(
+                    child: ListView.builder(
+                      itemCount: eventsProvider.audienceEventsAll.length,
+                      itemBuilder: (context, index) {
+                        if(index+1 == eventsProvider.audienceEventsAll.length){
+                          return Column(
+                            children: [
+                              EventItem(event: eventsProvider.audienceEventsAll[index],),
+                              SizedBox(height: 150,)
+                            ],
+                          );
+                        }else{
+                          return EventItem(event: eventsProvider.audienceEventsAll[index],);
+                        }
+                      }
+                    )
+                  ),
+                ),
+              );
+            return Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.filter_list, color: greyColor, size: 35,),
+                    Text("No hemos encontrado ningún evento", style: text3.copyWith(color: greyColor),),
+                  ],
                 ),
               ),
             );
-          return Container(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.filter_list, color: greyColor, size: 35,),
-                  Text("No hemos encontrado ningún evento", style: text3.copyWith(color: greyColor),),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+          },
+        ),
+      );
   }
 
   Widget _iconFieldItem(IconData icon, String text, Function(BuildContext context) onPress){
@@ -675,7 +675,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
     _isLoadingPagination = false;
   }
 
-  void _getItems() async {
+  Future<void> _getItems() async {
     final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
     bool internet = await check(context);
     if(internet){
