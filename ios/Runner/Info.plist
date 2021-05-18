@@ -33,17 +33,17 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Need to upload image</string>
+	<string>Park app uses the access to photos and camera of your device in order that you can upload images to your events and your artist profile</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>ANeed to access location</string>
+	<string>Park App uses the access to the location of your device to show you the nearby events in the area where you are</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need to access location</string>
+	<string>Park App uses the access to the location of your device to show you the nearby events in the area where you are</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need to access location</string>
+	<string>Park App uses the access to the location of your device to show you the nearby events in the area where you are</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Need to upload image</string>
+	<string>Park app uses the access to photos and camera of your device in order that you can upload images to your events and your artist profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Need to upload image</string>
+	<string>Park app uses the access to photos and camera of your device in order that you can upload images to your events and your artist profile</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
