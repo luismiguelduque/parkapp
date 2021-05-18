@@ -51,67 +51,12 @@ class _SignInState extends State<SignIn> {
     ],
   );
 
-  Future<void> _loginAndGetData() async {
-    try{
-      _igApi.authenticate().then(
-        (simpleAuth.Account _user) async {
-          simpleAuth.OAuthAccount user = _user;
-          final Uri uri = Uri.https("graph.instagram.com", "/me", {
-            "fields": "username,id,account_type,media_count",
-            "access_token": user.token,
-          });
-          final response = await http.get( uri);
-          final extractedData = json.decode(response.body) as Map<String, dynamic>;
-          /*
-          var igUserResponse = 
-              await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
-            '/me',
-            queryParameters: {
-              // Get the fields you need.
-              // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
-              "fields": "username,id,account_type,media_count",
-              "access_token": user.token,
-            },
-          );
-          */
-          setState(() {
-            _userData = extractedData['data'];
-            _errorMsg = null;
-          });
-          final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
-          if (resp['success']) {
-            await FirebaseAuth.instance.signInAnonymously();
-            showSuccessMessage(context, resp["message"]);
-            await Future.delayed(const Duration(seconds: 3), (){});
-            final prefs = new Preferences();
-            if(prefs.token!="0" && prefs.token!=null){
-              if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
-              }else{
-                if(prefs.userTypeId==1){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-                }else if(prefs.userTypeId==2){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
-                }else if(prefs.userTypeId==3){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
-                }else{
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-                }
-              }
-            }
-          }else{ 
-            showErrorMessage(context, resp["message"]);
-          }
-        },
-      ).catchError(
-        (Object e) {
-          setState(() => _errorMsg = e.toString());
-        },
-      );
-    }catch(error){
-      print(error);
-    }
-  }
+  final simpleAuth.FacebookApi _fcApi = simpleAuth.FacebookApi(
+    "facebook",
+    fbClientId,
+    fbClientSecret,
+    fbRedirectURL
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +84,7 @@ class _SignInState extends State<SignIn> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        /*
+                        
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
@@ -176,12 +121,12 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
-                        */
+                        
                         SizedBox(height: 20,),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            "Ingresa con tu email y contraseña",
+                            "O ingresa con tu email y contraseña",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -312,6 +257,97 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  Future<void> _loginAndGetDataIG() async {
+    try{
+      _igApi.authenticate().then(
+        (simpleAuth.Account _user) async {
+          simpleAuth.OAuthAccount user = _user;
+          setState(() {
+            _errorMsg = null;
+          });
+          final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
+          if (resp['success']) {
+            _goLogin(resp);
+          }else{ 
+            showErrorMessage(context, resp["message"]);
+          }
+        },
+      ).catchError(
+        (Object e) {
+          setState(() => _errorMsg = e.toString());
+        },
+      );
+    }catch(error){
+      print(error);
+    }
+  }
+
+  Future<void> _loginAndGetDataFC() async {
+    try{
+      _fcApi.authenticate().then(
+        (simpleAuth.Account _user) async {
+          simpleAuth.OAuthAccount user = _user;
+          setState(() {
+            _errorMsg = null;
+          });
+          final resp = await Provider.of<AuthProvider>(context, listen: false).logInFacebook(user.token);
+          if (resp['success']) {
+            _goLogin(resp);
+          }else{ 
+            showErrorMessage(context, resp["message"]);
+          }
+        },
+      ).catchError(
+        (Object e) {
+          setState(() => _errorMsg = e.toString());
+        },
+      );
+    }catch(error){
+      print(error);
+    }
+  }
+
+  /*
+          final Uri uri = Uri.https("graph.instagram.com", "/me", {
+            "fields": "username,id,account_type,media_count",
+            "access_token": user.token,
+          });
+          final response = await http.get( uri);
+          final extractedData = json.decode(response.body) as Map<String, dynamic>;
+          var igUserResponse = 
+              await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+            '/me',
+            queryParameters: {
+              // Get the fields you need.
+              // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
+              "fields": "username,id,account_type,media_count",
+              "access_token": user.token,
+            },
+          );
+          */
+
+  void _goLogin(resp) async {
+    await FirebaseAuth.instance.signInAnonymously();
+    showSuccessMessage(context, resp["message"]);
+    await Future.delayed(const Duration(seconds: 3), (){});
+    final prefs = new Preferences();
+    if(prefs.token!="0" && prefs.token!=null){
+      if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
+      }else{
+        if(prefs.userTypeId==1){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+        }else if(prefs.userTypeId==2){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
+        }else if(prefs.userTypeId==3){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
+        }else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+        }
+      }
+    }
+  }
+
   Widget getFTButton({bool isFacebook: true}) {
     return Container(
       height: 48,
@@ -337,9 +373,9 @@ class _SignInState extends State<SignIn> {
                 _isSaving = true;
               });
               if(isFacebook) {
-                //await loginWithFacebook(context);
+                await _loginAndGetDataFC();
               } else {
-                await _loginAndGetData();
+                await _loginAndGetDataIG();
               }
             }
           },
