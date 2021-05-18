@@ -204,7 +204,8 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                     _markers[0]
                 ],
                 onCLick: (val){
-                  _markers.add(
+                  _markers.insert(
+                    0,
                     Marker(
                       markerId: MarkerId('${_placeTemp.id}'),
                       position: val,
@@ -215,7 +216,7 @@ class _SettingsPlacesFormState extends State<SettingsPlacesForm> {
                       }),
                       draggable: true,
                       infoWindow: InfoWindow(
-                        title: '${_placeTemp.name}'
+                        title: 'Tu marcador'
                       )
                     ),
                   );

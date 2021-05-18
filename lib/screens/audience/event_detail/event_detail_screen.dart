@@ -154,7 +154,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         child: Icon(Icons.share, color: Colors.grey,),
                       ),
                       onTap: () {
-                        FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar");
+                        String message = "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar"; 
+                        launch("whatsapp://send?text=$message");
+                        //FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar");
                       },
                     ),
                   ],

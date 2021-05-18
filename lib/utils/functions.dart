@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:parkapp/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:location_permissions/location_permissions.dart';
-//import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:date_format/date_format.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flushbar/flushbar.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity/connectivity.dart';
 
 import '../utils/preferences.dart';
@@ -185,7 +185,6 @@ Future<Position> getCurrentUserLocation() async {
   
 }
 
-/*
 Future loginWithFacebook(BuildContext context) async {
   final _auth = FirebaseAuth.instance;
   final fbLogin = FacebookLogin();
@@ -220,7 +219,7 @@ Future loginWithFacebook(BuildContext context) async {
     showErrorMessage(context, "Lo sentimos, ha habido un problema. Por favor intente nuevamente mas tarde o use otro método de inicio de sesión");
   }
 }
-*/
+
 
 Future<bool> check(BuildContext context) async {
   var connectivityResult = await (Connectivity().checkConnectivity());
