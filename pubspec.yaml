@@ -41,6 +41,7 @@ dependencies:
   date_format: ^2.0.2
   geolocator: ^7.0.1
   intl: ^0.17.0
+  flutter_facebook_login: ^3.0.0
   google_maps_flutter: ^2.0.3
   flutter_page_indicators: ^0.0.1
   firebase_core: ^1.0.3

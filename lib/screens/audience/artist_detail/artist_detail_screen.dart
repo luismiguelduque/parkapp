@@ -136,7 +136,9 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                         child: Icon(Icons.share, color: Colors.grey,),
                       ),
                       onTap: () {
-                        FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a conocer a ${artist.stageName}.%0A%0ADescubre este y muchos otros artistas en la nueva app www.parkapp.com.ar");
+                        String message = "¡Hey!, te invito a conocer a ${artist.stageName}.%0A%0ADescubre este y muchos otros artistas en la nueva app www.parkapp.com.ar"; 
+                        launch("whatsapp://send?text=$message");
+                        //FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a conocer a ${artist.stageName}.%0A%0ADescubre este y muchos otros artistas en la nueva app www.parkapp.com.ar");
                       },
                     ),
                   ],

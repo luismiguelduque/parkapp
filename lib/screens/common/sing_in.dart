@@ -373,7 +373,7 @@ class _SignInState extends State<SignIn> {
                 _isSaving = true;
               });
               if(isFacebook) {
-                await _loginAndGetDataFC();
+                await loginWithFacebook(context);
               } else {
                 await _loginAndGetDataIG();
               }
