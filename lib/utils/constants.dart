@@ -24,23 +24,38 @@ const status7Color = Color(0xff49ad24);
 const status8Color = Color(0xff88eb24);
 
 //**** Texts ***//
-const title0 = TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title1 = TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title2 = TextStyle(fontSize: 21, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title3 = TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title4 = TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title5 = TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
-const title6 = TextStyle(fontSize: 9, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title0 = TextStyle(
+    fontSize: 30, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title1 = TextStyle(
+    fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title2 = TextStyle(
+    fontSize: 21, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title3 = TextStyle(
+    fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title4 = TextStyle(
+    fontSize: 15, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title5 = TextStyle(
+    fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
+const title6 =
+    TextStyle(fontSize: 9, fontWeight: FontWeight.bold, fontFamily: 'WorkSans');
 
-const text1 = TextStyle(fontSize: 24, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
-const text2 = TextStyle(fontSize: 21, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
-const text3 = TextStyle(fontSize: 18, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
-const text4 = TextStyle(fontSize: 15, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
-const text5 = TextStyle(fontSize: 12, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
-const text6 = TextStyle(fontSize: 9, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text1 = TextStyle(
+    fontSize: 24, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text2 = TextStyle(
+    fontSize: 21, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text3 = TextStyle(
+    fontSize: 18, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text4 = TextStyle(
+    fontSize: 15, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text5 = TextStyle(
+    fontSize: 12, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
+const text6 = TextStyle(
+    fontSize: 9, fontWeight: FontWeight.normal, fontFamily: 'WorkSans');
 
-const bool developmentMode = true;
-const apiUrl = developmentMode ? "parkapp.alternativasinteligentes.com" : "ec2-54-184-105-143.us-west-2.compute.amazonaws.com";
+const bool developmentMode = false;
+const apiUrl = developmentMode
+    ? "parkapp.alternativasinteligentes.com"
+    : "ec2-54-184-105-143.us-west-2.compute.amazonaws.com";
 
 const igClientId = "429845871678494";
 const igClientSecret = "5f9240fd69205cd2e180cae6a870f667";

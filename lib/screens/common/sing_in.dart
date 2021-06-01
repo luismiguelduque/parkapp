@@ -25,7 +25,6 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-
   @override
   void initState() {
     super.initState();
@@ -52,11 +51,7 @@ class _SignInState extends State<SignIn> {
   );
 
   final simpleAuth.FacebookApi _fcApi = simpleAuth.FacebookApi(
-    "facebook",
-    fbClientId,
-    fbClientSecret,
-    fbRedirectURL
-  );
+      "facebook", fbClientId, fbClientSecret, fbRedirectURL);
 
   @override
   Widget build(BuildContext context) {
@@ -75,20 +70,20 @@ class _SignInState extends State<SignIn> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding:EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: appBar(),
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child:Form(
+                  child: Form(
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
-                            "Ingresa con tu usuario de redes",
+                            "Ingresa con tu usuario de instagram",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -105,12 +100,14 @@ class _SignInState extends State<SignIn> {
                                 SizedBox(
                                   width: 24,
                                 ),
+                                /*
                                 Expanded(
                                   child: getFTButton(),
                                 ),
                                 SizedBox(
                                   width: 16,
                                 ),
+                                */
                                 Expanded(
                                   child: getFTButton(isFacebook: false),
                                 ),
@@ -121,8 +118,9 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
-                        
-                        SizedBox(height: 20,),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
@@ -135,13 +133,15 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 15,),
+                        SizedBox(
+                          height: 15,
+                        ),
                         CustomTextfield(
                           height: 56,
                           verticalMargin: 5,
                           label: "E-mail",
                           inputFormatters: 'email',
-                          onChanged: (value){
+                          onChanged: (value) {
                             _email = value;
                           },
                           validator: (value) {
@@ -158,7 +158,7 @@ class _SignInState extends State<SignIn> {
                           height: 56,
                           verticalMargin: 5,
                           label: "Contraseña",
-                          onChanged: (value){
+                          onChanged: (value) {
                             _password = value;
                           },
                           validator: (value) {
@@ -168,7 +168,9 @@ class _SignInState extends State<SignIn> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,8 +185,12 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             InkWell(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              onTap: () {Navigator.of(context).pushNamed("forget-password");},
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed("forget-password");
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -199,16 +205,20 @@ class _SignInState extends State<SignIn> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         CustomGeneralButton(
-                          onPressed: ()=> _login(context),
+                          onPressed: () => _login(context),
                           loading: _isSaving,
                           color: AppTheme.getTheme().colorScheme.secondary,
                           text: "Iniciar sesión",
-                          width: size.width*0.8,
+                          width: size.width * 0.8,
                           height: 50,
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -223,7 +233,8 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             InkWell(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                               onTap: () {
                                 Navigator.of(context).pushNamed("sing-up");
                               },
@@ -241,7 +252,9 @@ class _SignInState extends State<SignIn> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).padding.bottom + 24,
                         )
@@ -258,17 +271,18 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<void> _loginAndGetDataIG() async {
-    try{
+    try {
       _igApi.authenticate().then(
         (simpleAuth.Account _user) async {
           simpleAuth.OAuthAccount user = _user;
           setState(() {
             _errorMsg = null;
           });
-          final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
+          final resp = await Provider.of<AuthProvider>(context, listen: false)
+              .logInInstagram(user.token);
           if (resp['success']) {
             _goLogin(resp);
-          }else{ 
+          } else {
             showErrorMessage(context, resp["message"]);
           }
         },
@@ -277,23 +291,24 @@ class _SignInState extends State<SignIn> {
           setState(() => _errorMsg = e.toString());
         },
       );
-    }catch(error){
+    } catch (error) {
       print(error);
     }
   }
 
   Future<void> _loginAndGetDataFC() async {
-    try{
+    try {
       _fcApi.authenticate().then(
         (simpleAuth.Account _user) async {
           simpleAuth.OAuthAccount user = _user;
           setState(() {
             _errorMsg = null;
           });
-          final resp = await Provider.of<AuthProvider>(context, listen: false).logInFacebook(user.token);
+          final resp = await Provider.of<AuthProvider>(context, listen: false)
+              .logInFacebook(user.token);
           if (resp['success']) {
             _goLogin(resp);
-          }else{ 
+          } else {
             showErrorMessage(context, resp["message"]);
           }
         },
@@ -302,7 +317,7 @@ class _SignInState extends State<SignIn> {
           setState(() => _errorMsg = e.toString());
         },
       );
-    }catch(error){
+    } catch (error) {
       print(error);
     }
   }
@@ -329,20 +344,35 @@ class _SignInState extends State<SignIn> {
   void _goLogin(resp) async {
     await FirebaseAuth.instance.signInAnonymously();
     showSuccessMessage(context, resp["message"]);
-    await Future.delayed(const Duration(seconds: 3), (){});
+    await Future.delayed(const Duration(seconds: 3), () {});
     final prefs = new Preferences();
-    if(prefs.token!="0" && prefs.token!=null){
-      if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
-      }else{
-        if(prefs.userTypeId==1){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-        }else if(prefs.userTypeId==2){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
-        }else if(prefs.userTypeId==3){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
-        }else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+    if (prefs.token != "0" && prefs.token != null) {
+      if (prefs.cityId < 1 || prefs.neighborhoodId < 1) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => AskLocation()));
+      } else {
+        if (prefs.userTypeId == 1) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AudienceEventsScreen()));
+        } else if (prefs.userTypeId == 2) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ArtistEventsScreen()));
+        } else if (prefs.userTypeId == 3) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AdminEventsScreen()));
+        } else {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AudienceEventsScreen()));
         }
       }
     }
@@ -368,11 +398,11 @@ class _SignInState extends State<SignIn> {
           borderRadius: BorderRadius.all(Radius.circular(24.0)),
           highlightColor: Colors.transparent,
           onTap: () async {
-            if(!_isSaving){
+            if (!_isSaving) {
               setState(() {
                 _isSaving = true;
               });
-              if(isFacebook) {
+              if (isFacebook) {
                 await loginWithFacebook(context);
               } else {
                 await _loginAndGetDataIG();
@@ -384,26 +414,25 @@ class _SignInState extends State<SignIn> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                if(!_isSaving)
-                  Icon( 
-                    isFacebook ? FontAwesomeIcons.facebookF : FontAwesomeIcons.instagram,
-                    size: 20,
-                    color: Colors.white
-                  ),
+                if (!_isSaving)
+                  Icon(
+                      isFacebook
+                          ? FontAwesomeIcons.facebookF
+                          : FontAwesomeIcons.instagram,
+                      size: 20,
+                      color: Colors.white),
                 SizedBox(
                   width: 4,
                 ),
-                if(!_isSaving)
+                if (!_isSaving)
                   Text(
                     isFacebook ? "Facebook" : "Instagram",
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: Colors.white
-                    ),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Colors.white),
                   ),
-                if(_isSaving)
-                  CircularProgressIndicator(),
+                if (_isSaving) CircularProgressIndicator(),
               ],
             ),
           ),
@@ -458,7 +487,7 @@ class _SignInState extends State<SignIn> {
 
   void _login(BuildContext context) async {
     bool internet = await check(context);
-    if(internet){
+    if (internet) {
       if (!_formKey.currentState.validate()) {
         return;
       }
@@ -466,35 +495,53 @@ class _SignInState extends State<SignIn> {
       setState(() {
         _isSaving = true;
       });
-      final resp = await Provider.of<AuthProvider>(context, listen: false).logIn(_email, _password);
+      final resp = await Provider.of<AuthProvider>(context, listen: false)
+          .logIn(_email, _password);
       print(resp['success']);
       if (resp['success']) {
         await _auth.signInAnonymously();
         showSuccessMessage(context, resp["message"]);
-        await Future.delayed(const Duration(seconds: 3), (){});
+        await Future.delayed(const Duration(seconds: 3), () {});
         final prefs = new Preferences();
-        if(prefs.token!="0" && prefs.token!=null){
-          if(prefs.cityId < 1 || prefs.neighborhoodId < 1){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
-          }else{
-            if(prefs.userTypeId==1){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
-            }else if(prefs.userTypeId==2){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
-            }else if(prefs.userTypeId==3){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
-            }else{
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
+        if (prefs.token != "0" && prefs.token != null) {
+          if (prefs.cityId < 1 || prefs.neighborhoodId < 1) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => AskLocation()));
+          } else {
+            if (prefs.userTypeId == 1) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          AudienceEventsScreen()));
+            } else if (prefs.userTypeId == 2) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ArtistEventsScreen()));
+            } else if (prefs.userTypeId == 3) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => AdminEventsScreen()));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          AudienceEventsScreen()));
             }
           }
         }
-      }else{ 
+      } else {
         showErrorMessage(context, resp["message"]);
       }
       setState(() {
         _isSaving = false;
       });
-    }else{
+    } else {
       showErrorMessage(context, "No tienes conexión a internet");
     }
   }

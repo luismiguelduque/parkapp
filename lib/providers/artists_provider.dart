@@ -13,7 +13,6 @@ import '../utils/constants.dart';
 import '../utils/preferences.dart';
 
 class ArtistsProvider extends ChangeNotifier {
-
   Map<String, String> requestHeaders = {
     'Content-type': 'application/json',
     'Accept': 'application/json'
@@ -34,7 +33,7 @@ class ArtistsProvider extends ChangeNotifier {
   List<ArtistModel> get artistsSuspensions {
     return [..._artistsSuspensions];
   }
-  
+
   List<ArtistModel> get artistsComplaints {
     return _artists.where((element) => element.complaintsCount > 0).toList();
   }
@@ -43,7 +42,7 @@ class ArtistsProvider extends ChangeNotifier {
   ArtistModel get artistDetail {
     return _artistDetail;
   }
-  
+
   ArtistIndicatorModel _artistIndicators;
   ArtistIndicatorModel get artistIndicators {
     return _artistIndicators;
@@ -53,148 +52,169 @@ class ArtistsProvider extends ChangeNotifier {
   int adminArtistTotalSuspensions = 0;
   int adminArtistTotalRequests = 0;
 
-  Future<Map<String, dynamic>> store(ArtistModel artist, File profileImage, File coverImage) async {
+  Future<Map<String, dynamic>> store(
+      ArtistModel artist, File profileImage, File coverImage) async {
     Map<String, dynamic> respJson = {};
-    final url = developmentMode ? 'https://$apiUrl/api/artists' : 'http://$apiUrl/api/artists';
-    try{
+    final url = developmentMode
+        ? 'https://$apiUrl/api/artists'
+        : 'http://$apiUrl/api/artists';
+    try {
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);
       request.headers['Content-type'] = 'application/json';
       request.headers['Accept'] = 'application/json';
-      request.headers['Authorization'] = 'Bearer ${ _preferences.token }';
-      request.fields['user_id'] =  _preferences.userId.toString();
-      request.fields['stage_name'] =  artist.stageName.toString();
-      request.fields['description'] =  artist.description.toString();
-      request.fields['artistic_genre_id'] =  artist.artisticGenre.id.toString();
-      request.fields['dni'] =  artist.dni.toString();
-      if(artist.urlVideo != null){
-        request.fields['url_video'] =  artist.urlVideo.toString();
+      request.headers['Authorization'] = 'Bearer ${_preferences.token}';
+      request.fields['user_id'] = _preferences.userId.toString();
+      request.fields['stage_name'] = artist.stageName.toString();
+      request.fields['description'] = artist.description.toString();
+      request.fields['artistic_genre_id'] = artist.artisticGenre.id.toString();
+      request.fields['dni'] = artist.dni.toString();
+      if (artist.urlVideo != null) {
+        request.fields['url_video'] = artist.urlVideo.toString();
       }
-      if(profileImage != null){
-        request.files.add(new http.MultipartFile.fromBytes('profile_image', await File.fromUri(Uri.parse(profileImage.path)).readAsBytes(), filename: basename(profileImage.path), contentType: new MediaType('image', 'jpeg')));
+      if (profileImage != null) {
+        request.files.add(new http.MultipartFile.fromBytes('profile_image',
+            await File.fromUri(Uri.parse(profileImage.path)).readAsBytes(),
+            filename: basename(profileImage.path),
+            contentType: new MediaType('image', 'jpeg')));
       }
-      if(coverImage != null){
-        request.files.add(new http.MultipartFile.fromBytes('cover_image', await File.fromUri(Uri.parse(coverImage.path)).readAsBytes(), filename: basename(coverImage.path), contentType: new MediaType('image', 'jpeg')));
+      if (coverImage != null) {
+        request.files.add(new http.MultipartFile.fromBytes('cover_image',
+            await File.fromUri(Uri.parse(coverImage.path)).readAsBytes(),
+            filename: basename(coverImage.path),
+            contentType: new MediaType('image', 'jpeg')));
       }
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
           respJson['message'] = decodedResponse['message'];
         }
       }
       return respJson;
-    }catch(error){
-      try{
-        if(error['message'] == 'The given data was invalid'){
+    } catch (error) {
+      try {
+        if (error['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = error['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
         return respJson;
-      }catch(error){
+      } catch (error) {
         print("error");
       }
     }
   }
 
-Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage, File coverImage, int artistId) async {
+  Future<Map<String, dynamic>> updateArtist(ArtistModel artist,
+      File profileImage, File coverImage, int artistId) async {
     Map<String, dynamic> respJson = {};
-    final url = developmentMode ? 'https://$apiUrl/api/artists/$artistId' : 'http://$apiUrl/api/artists/$artistId'; 
-    try{
+    final url = developmentMode
+        ? 'https://$apiUrl/api/artists/$artistId'
+        : 'http://$apiUrl/api/artists/$artistId';
+    try {
       var postUri = Uri.parse(url);
       var request = new http.MultipartRequest("POST", postUri);
       request.headers['Content-type'] = 'application/json';
       request.headers['Accept'] = 'application/json';
-      request.headers['Authorization'] = 'Bearer ${ _preferences.token }';
-      request.fields['user_id'] =  _preferences.userId.toString();
-      request.fields['stage_name'] =  artist.stageName.toString();
-      request.fields['description'] =  artist.description.toString();
-      request.fields['artistic_genre_id'] =  artist.artisticGenre.id.toString();
-      request.fields['dni'] =  artist.dni.toString();
-      if(artist.urlVideo != null){
+      request.headers['Authorization'] = 'Bearer ${_preferences.token}';
+      request.fields['user_id'] = _preferences.userId.toString();
+      request.fields['stage_name'] = artist.stageName.toString();
+      request.fields['description'] = artist.description.toString();
+      request.fields['artistic_genre_id'] = artist.artisticGenre.id.toString();
+      request.fields['dni'] = artist.dni.toString();
+      if (artist.urlVideo != null) {
         request.fields['url_video'] = artist.urlVideo.toString();
       }
-      if(profileImage != null){
-        request.files.add(new http.MultipartFile.fromBytes('profile_image', await File.fromUri(Uri.parse(profileImage.path)).readAsBytes(), filename: basename(profileImage.path), contentType: new MediaType('image', 'jpeg')));
+      if (profileImage != null) {
+        request.files.add(new http.MultipartFile.fromBytes('profile_image',
+            await File.fromUri(Uri.parse(profileImage.path)).readAsBytes(),
+            filename: basename(profileImage.path),
+            contentType: new MediaType('image', 'jpeg')));
       }
-      if(coverImage != null){
-        request.files.add(new http.MultipartFile.fromBytes('cover_image', await File.fromUri(Uri.parse(coverImage.path)).readAsBytes(), filename: basename(coverImage.path), contentType: new MediaType('image', 'jpeg')));
+      if (coverImage != null) {
+        request.files.add(new http.MultipartFile.fromBytes('cover_image',
+            await File.fromUri(Uri.parse(coverImage.path)).readAsBytes(),
+            filename: basename(coverImage.path),
+            contentType: new MediaType('image', 'jpeg')));
       }
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = 'Registro guardado exitosamente';
         _preferences.artistName = decodedResponse['data']['stage_name'];
         _preferences.artistPhoto = decodedResponse['data']['profile_image'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
-      if(error['message'] == 'The given data was invalid'){
+    } catch (error) {
+      if (error['message'] == 'The given data was invalid') {
         final Map<String, dynamic> errors = error['errors'];
         errors.forEach((key, value) {
           respJson['success'] = false;
           respJson['message'] = value.toString();
         });
-      }else{
+      } else {
         respJson['success'] = false;
-        respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+        respJson['message'] =
+            'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       }
       return respJson;
     }
   }
 
-
   Future<void> getArtists({String search, int offset, int limit}) async {
     try {
-      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
-      }) : Uri.http(apiUrl, "api/artists", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
-      });
+      final Uri uri = developmentMode
+          ? Uri.https(apiUrl, "api/artists", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            })
+          : Uri.http(apiUrl, "api/artists", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            });
       print("getArtists");
       print(uri);
-      final response = await http.get(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
+      });
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       print("getArtists -------");
       print(extractedData);
@@ -204,11 +224,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
       final List<ArtistModel> tempItems = [];
       List artists = extractedData['data'];
       adminArtistTotal = extractedData['total'];
-      if(offset > 0){
+      if (offset > 0) {
         artists.forEach((element) {
           _artists.add(ArtistModel.fromJson(element));
         });
-      }else{
+      } else {
         artists.forEach((element) {
           tempItems.add(ArtistModel.fromJson(element));
         });
@@ -221,25 +241,28 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
     }
   }
 
-  Future<void> getArtistsAudience(String search, int offset, int limit,) async {
+  Future<void> getArtistsAudience(
+    String search,
+    int offset,
+    int limit,
+  ) async {
     try {
-      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists-audience", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
-      }) : Uri.http(apiUrl, "api/artists", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
+      final Uri uri = developmentMode
+          ? Uri.https(apiUrl, "api/artists-audience", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            })
+          : Uri.http(apiUrl, "api/artists", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            });
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
       });
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -249,11 +272,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
       final List<ArtistModel> tempItems = [];
       List artists = extractedData['data'];
       adminArtistTotal = extractedData['total'];
-      if(offset > 0){
+      if (offset > 0) {
         artists.forEach((element) {
           _artists.add(ArtistModel.fromJson(element));
         });
-      }else{
+      } else {
         artists.forEach((element) {
           tempItems.add(ArtistModel.fromJson(element));
         });
@@ -266,25 +289,25 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
     }
   }
 
-  Future<void> getArtistsRequests({String search, int offset, int limit}) async {
+  Future<void> getArtistsRequests(
+      {String search, int offset, int limit}) async {
     try {
-      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/requests", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
-      }) : Uri.http(apiUrl, "api/artists/requests", {
-        "search": search==null?"":search,
-        "offset": "$offset",
-        "limit": "$limit"
+      final Uri uri = developmentMode
+          ? Uri.https(apiUrl, "api/artists/requests", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            })
+          : Uri.http(apiUrl, "api/artists/requests", {
+              "search": search == null ? "" : search,
+              "offset": "$offset",
+              "limit": "$limit"
+            });
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
       });
-      final response = await http.get(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -292,11 +315,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
       final List<ArtistModel> tempItems = [];
       List artists = extractedData['data'];
       adminArtistTotalRequests = extractedData['total'];
-      if(offset > 0){
+      if (offset > 0) {
         artists.forEach((element) {
           _artistsRequests.add(ArtistModel.fromJson(element));
         });
-      }else{
+      } else {
         artists.forEach((element) {
           tempItems.add(ArtistModel.fromJson(element));
         });
@@ -309,21 +332,21 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
     }
   }
 
-  Future<void> getArtistsSuspensions({String search, int offset, int limit}) async {
+  Future<void> getArtistsSuspensions(
+      {String search, int offset, int limit}) async {
     try {
-      final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/suspensions", {
-        "search": search==null?"":search,
-      }) : Uri.http(apiUrl, "api/artists/suspensions", {
-        "search": search==null?"":search,
+      final Uri uri = developmentMode
+          ? Uri.https(apiUrl, "api/artists/suspensions", {
+              "search": search == null ? "" : search,
+            })
+          : Uri.http(apiUrl, "api/artists/suspensions", {
+              "search": search == null ? "" : search,
+            });
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
       });
-      final response = await http.get(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -331,11 +354,11 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
       final List<ArtistModel> tempItems = [];
       List artists = extractedData['data'];
       adminArtistTotalSuspensions = extractedData['total'];
-      if(offset > 0){
+      if (offset > 0) {
         artists.forEach((element) {
           _artistsSuspensions.add(ArtistModel.fromJson(element));
         });
-      }else{
+      } else {
         artists.forEach((element) {
           tempItems.add(ArtistModel.fromJson(element));
         });
@@ -350,91 +373,94 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> activateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/activate/$artistId", {}) : Uri.http(apiUrl, "api/artists/activate/$artistId", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/activate/$artistId", {})
+        : Uri.http(apiUrl, "api/artists/activate/$artistId", {});
     try {
-      final response = await http.post(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final response = await http.post(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
+      });
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       print("++++-+++-----");
       print(decodedResponse);
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       print(error);
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> rejectArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/reject/$artistId", {}) : Uri.http(apiUrl, "api/artists/reject/$artistId", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/reject/$artistId", {})
+        : Uri.http(apiUrl, "api/artists/reject/$artistId", {});
     try {
-      final response = await http.post(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final response = await http.post(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
+      });
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       print(error);
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<void> getArtistDetail(int id) async {
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/$id", {}) : Uri.http(apiUrl, "api/artists/$id", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/$id", {})
+        : Uri.http(apiUrl, "api/artists/$id", {});
     try {
-      final response = await http.get(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
+      });
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -446,18 +472,17 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
       print(error);
     }
   }
-  
+
   Future<void> getArtistIndicators() async {
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/indicators/artists", {}) : Uri.http(apiUrl, "api/indicators/artists", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/indicators/artists", {})
+        : Uri.http(apiUrl, "api/indicators/artists", {});
     try {
-      final response = await http.get(
-        uri, 
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_preferences.token}',
-        }
-      );
+      final response = await http.get(uri, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${_preferences.token}',
+      });
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
@@ -472,159 +497,181 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
 
   Future<Map<String, dynamic>> suspendArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/suspend/$artistId", {}) : Uri.http(apiUrl, "api/artists/suspend/$artistId", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/suspend/$artistId", {})
+        : Uri.http(apiUrl, "api/artists/suspend/$artistId", {});
     try {
       final response = await http.put(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer ${_preferences.token}',
         },
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> reactivateArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/reactivate/$artistId", {}) : Uri.http(apiUrl, "api/artists/reactivate/$artistId", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/reactivate/$artistId", {})
+        : Uri.http(apiUrl, "api/artists/reactivate/$artistId", {});
     try {
       final response = await http.put(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer ${_preferences.token}',
         },
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> deleteArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/delete/$artistId", {}) : Uri.http(apiUrl, "api/artists/delete/$artistId", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/delete/$artistId", {})
+        : Uri.http(apiUrl, "api/artists/delete/$artistId", {});
     try {
       final response = await http.delete(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer ${_preferences.token}',
         },
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> reportArtist(int eventId, String reason) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists_complaint", {}) : Uri.http(apiUrl, "api/artists_complaint", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists_complaint", {})
+        : Uri.http(apiUrl, "api/artists_complaint", {});
     try {
       final response = await http.post(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer ${_preferences.token}',
         },
         body: json.encode({
-            'user_id': _preferences.userId,
+          'user_id': _preferences.userId,
           'artist_id': eventId,
           'reason': reason,
         }),
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> followArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/follow", {}) : Uri.http(apiUrl, "api/artists/follow", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/follow", {})
+        : Uri.http(apiUrl, "api/artists/follow", {});
     try {
       final response = await http.post(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -634,36 +681,41 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
           'artist_id': artistId,
         }),
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
   Future<Map<String, dynamic>> unFollowArtist(int artistId) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/unfollow", {}) : Uri.http(apiUrl, "api/artists/unfollow", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/unfollow", {})
+        : Uri.http(apiUrl, "api/artists/unfollow", {});
     try {
       final response = await http.post(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -673,36 +725,42 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
           'artist_id': artistId,
         }),
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
 
-  Future<Map<String, dynamic>> rateArtist(int artistId, String observation, double rating) async {
+  Future<Map<String, dynamic>> rateArtist(
+      int artistId, String observation, double rating) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/artists/add-user-rating", {}) : Uri.http(apiUrl, "api/artists/add-user-rating", {});
+    final Uri uri = developmentMode
+        ? Uri.https(apiUrl, "api/artists/add-user-rating", {})
+        : Uri.http(apiUrl, "api/artists/add-user-rating", {});
     try {
       final response = await http.post(
-        uri, 
+        uri,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -714,26 +772,29 @@ Future<Map<String, dynamic>> updateArtist(ArtistModel artist, File profileImage,
           'rating': rating,
         }),
       );
-      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      final decodedResponse =
+          json.decode(response.body) as Map<String, dynamic>;
       if (decodedResponse['success']) {
         respJson['success'] = true;
         respJson['message'] = decodedResponse['message'];
       } else {
-        if(decodedResponse['message'] == 'The given data was invalid'){
+        if (decodedResponse['message'] == 'The given data was invalid') {
           final Map<String, dynamic> errors = decodedResponse['errors'];
           errors.forEach((key, value) {
             respJson['success'] = false;
             respJson['message'] = value.toString();
           });
-        }else{
+        } else {
           respJson['success'] = false;
-          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+          respJson['message'] =
+              'No pudimos procesar tu petición. Por favor, intenta mas tarde';
         }
       }
       return respJson;
-    }catch(error){
+    } catch (error) {
       respJson['success'] = false;
-      respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+      respJson['message'] =
+          'No pudimos procesar tu petición. Por favor, intenta mas tarde';
       return respJson;
     }
   }
