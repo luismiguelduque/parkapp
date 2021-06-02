@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -31,11 +32,16 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
     if(!_isLoaded){
       _isLoading = true;
       final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-      await Future.wait([
-        chatProvider.getAdminAllConversation(),
-        chatProvider.getAdminConversation(null, _offsetUser, _limitUser, 1),
-        chatProvider.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          chatProvider.getAdminAllConversation(),
+          chatProvider.getAdminConversation(null, _offsetUser, _limitUser, 1),
+          chatProvider.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -91,10 +97,15 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
                               _isLoadingSearch = true;
                             });
                             final chatProvier = Provider.of<ChatProvider>(context, listen: false);
-                            await Future.wait([
-                              chatProvier.getAdminConversation(value, _offsetUser, _limitUser, 1),
-                              chatProvier.getAdminConversation(value, _offsetArtist, _limitArtist, 2),
-                            ]);
+                            bool internet = await check(context);
+                            if(internet){
+                              await Future.wait([
+                                chatProvier.getAdminConversation(value, _offsetUser, _limitUser, 1),
+                                chatProvier.getAdminConversation(value, _offsetArtist, _limitArtist, 2),
+                              ]);
+                            }else{
+                              showErrorMessage(context, "No tienes conexión a internet");
+                            }
                             setState(() { 
                               _isLoadingSearch = false;
                             });
@@ -108,10 +119,15 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
                               _searchFilter = !_searchFilter;
                             });
                             final chatProvier = Provider.of<ChatProvider>(context, listen: false);
-                            await Future.wait([
-                              chatProvier.getAdminConversation(null, _offsetUser, _limitUser, 1),
-                              chatProvier.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
-                            ]);
+                            bool internet = await check(context);
+                            if(internet){
+                              await Future.wait([
+                                chatProvier.getAdminConversation(null, _offsetUser, _limitUser, 1),
+                                chatProvier.getAdminConversation(null, _offsetArtist, _limitArtist, 2),
+                              ]);
+                            }else{
+                              showErrorMessage(context, "No tienes conexión a internet");
+                            }
                             if(this.mounted) {
                               setState(() { _isLoadingSearch = false; });
                             }
@@ -324,9 +340,14 @@ class _AdminMessagesScreenState extends State<AdminMessagesScreen> {
     }
     
     final chatProvier = Provider.of<ChatProvider>(context, listen: false);
-    await Future.wait([
-      chatProvier.getAdminConversation(null, _offset, _limit, userType),
-    ]);
+    bool internet = await check(context);
+    if(internet){
+      await Future.wait([
+        chatProvier.getAdminConversation(null, _offset, _limit, userType),
+      ]);
+    }else{
+      showErrorMessage(context, "No tienes conexión a internet");
+    }
     _isLoadingPagination = false;
   }
 }

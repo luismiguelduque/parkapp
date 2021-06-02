@@ -54,10 +54,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       final eventId = ModalRoute.of(context).settings.arguments;
       final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
       setCustomMapPin();
-      await Future.wait([
-        eventsProvider.getEventDetail(eventId),
-        eventsProvider.getUserSheduledEvent(),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          eventsProvider.getEventDetail(eventId),
+          eventsProvider.getUserSheduledEvent(),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -135,7 +140,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     Text(
                       "Detalle del evento",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white, shadows: <Shadow>[
+                      style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.white, shadows: <Shadow>[
                         Shadow(
                           offset: Offset(0, 0),
                           blurRadius: 5.0,
@@ -149,7 +154,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         child: Icon(Icons.share, color: Colors.grey,),
                       ),
                       onTap: () {
-                        FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar");
+                        String message = "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar"; 
+                        launch("whatsapp://send?text=$message");
+                        //FlutterOpenWhatsapp.sendSingleMessage("", "¡Hey!, te invito a ver ${event.name} en ${event.place.name}.%0A%0ADescubre este y muchos otros eventos en la nueva app www.parkapp.com.ar");
                       },
                     ),
                   ],
@@ -208,42 +215,47 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       height: 45,
                       width: size.width*0.7,
                       onPressed: () async {
-                        if(!_isSaving){
-                          if(!isSheduled){
-                            setState(() => _isSaving = true );
-                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                            final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
-                            await Future.wait([
-                              eventsProvider.getUserSheduledEvent(),
-                              eventsProvider.getAudienceEventsClose(),
-                              eventsProvider.getAudienceEventsNow(),
-                              eventsProvider.getAudienceEventsWeekend(),
-                              eventsProvider.getAudienceEventsAll()
-                            ]);
-                            setState(() => _isSaving = false );
-                            if (resp['success']) {
-                              showSuccessMessage(context, resp["message"]);
-                            }else{ 
-                              showErrorMessage(context, resp["message"]);
-                            }
-                          }else{
-                            setState(() => _isSaving = true );
-                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                            final resp = await eventsProvider.unScheduleEvent(event.id);
-                            await Future.wait([
-                              eventsProvider.getUserSheduledEvent(),
-                              eventsProvider.getAudienceEventsClose(),
-                              eventsProvider.getAudienceEventsNow(),
-                              eventsProvider.getAudienceEventsWeekend(),
-                              eventsProvider.getAudienceEventsAll()
-                            ]);
-                            setState(() => _isSaving = false );
-                            if (resp['success']) {
-                              showSuccessMessage(context, resp["message"]);
-                            }else{ 
-                              showErrorMessage(context, resp["message"]);
+                        bool internet = await check(context);
+                        if(internet){
+                          if(!_isSaving){
+                            if(!isSheduled){
+                              setState(() => _isSaving = true );
+                              final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                              final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
+                              await Future.wait([
+                                eventsProvider.getUserSheduledEvent(),
+                                eventsProvider.getAudienceEventsClose(),
+                                eventsProvider.getAudienceEventsNow(),
+                                eventsProvider.getAudienceEventsWeekend(),
+                                eventsProvider.getAudienceEventsAll()
+                              ]);
+                              setState(() => _isSaving = false );
+                              if (resp['success']) {
+                                showSuccessMessage(context, resp["message"]);
+                              }else{ 
+                                showErrorMessage(context, resp["message"]);
+                              }
+                            }else{
+                              setState(() => _isSaving = true );
+                              final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                              final resp = await eventsProvider.unScheduleEvent(event.id);
+                              await Future.wait([
+                                eventsProvider.getUserSheduledEvent(),
+                                eventsProvider.getAudienceEventsClose(),
+                                eventsProvider.getAudienceEventsNow(),
+                                eventsProvider.getAudienceEventsWeekend(),
+                                eventsProvider.getAudienceEventsAll()
+                              ]);
+                              setState(() => _isSaving = false );
+                              if (resp['success']) {
+                                showSuccessMessage(context, resp["message"]);
+                              }else{ 
+                                showErrorMessage(context, resp["message"]);
+                              }
                             }
                           }
+                        }else{
+                          showErrorMessage(context, "No tienes conexión a internet");
                         }
                       },
                       color: isSheduled ? AppTheme.getTheme().disabledColor : AppTheme.getTheme().colorScheme.secondary,
@@ -575,26 +587,30 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           textStyle: title3,
                           width: size.width,
                           onPressed: _isSaving ? null : () async {
+                            bool internet = await check(context);
+                            if(internet){
+                              if (_rating > 0) {
+                                setState((){
+                                  _isSaving = true;
+                                });
+                                final ordersProvider = Provider.of<EventsProvider>(context, listen: false);
+                                Map<String, dynamic> response = await ordersProvider.rateEvent(id, _description, _rating);
+                                setState((){
+                                  _isSaving = false;
+                                  _rating = 0;
+                                });
 
-                            if (_rating > 0) {
-                              setState((){
-                                _isSaving = true;
-                              });
-                              final ordersProvider = Provider.of<EventsProvider>(context, listen: false);
-                              Map<String, dynamic> response = await ordersProvider.rateEvent(id, _description, _rating);
-                              setState((){
-                                _isSaving = false;
-                                _rating = 0;
-                              });
-
-                              Navigator.pop(context);
-                              if (response['success']) {
-                                showSuccessMessage(context, "Calificación del evento guardada exitosamente");
+                                Navigator.pop(context);
+                                if (response['success']) {
+                                  showSuccessMessage(context, "Calificación del evento guardada exitosamente");
+                                } else {
+                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                }
                               } else {
-                                showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                showErrorMessage(context, "Dale una calificación al evento");
                               }
-                            } else {
-                              showErrorMessage(context, "Dale una calificación al evento");
+                            }else{
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                           },
                         ),
@@ -659,23 +675,28 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                             textStyle: title3,
                             width: size.width*0.3,
                             onPressed: _isSaving ? null : () async {
-                              if (_report.toString().length > 0) {
-                                setState((){
-                                  _isSaving = true;
-                                });
-                                final ordersProvider = Provider.of<EventsProvider>(context, listen: false);
-                                Map<String, dynamic> response = await ordersProvider.reportEvent(id, _report);
-                                setState((){
-                                  _isSaving = false;
-                                }); 
-                                Navigator.pop(context);
-                                if (response['success']) {
-                                  showSuccessMessage(context, "Evento denunciado exitosamente");
+                              bool internet = await check(context);
+                              if(internet){
+                                if (_report.toString().length > 0) {
+                                  setState((){
+                                    _isSaving = true;
+                                  });
+                                  final ordersProvider = Provider.of<EventsProvider>(context, listen: false);
+                                  Map<String, dynamic> response = await ordersProvider.reportEvent(id, _report);
+                                  setState((){
+                                    _isSaving = false;
+                                  }); 
+                                  Navigator.pop(context);
+                                  if (response['success']) {
+                                    showSuccessMessage(context, "Evento denunciado exitosamente");
+                                  } else {
+                                    showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                  }
                                 } else {
-                                  showErrorMessage(context, "Ha habido un problema al procesar su peticion. Por favor, intente nuevamente.");
+                                  showErrorMessage(context, "Indica la razón");
                                 }
-                              } else {
-                                showErrorMessage(context, "Indica la razón");
+                              }else{
+                                showErrorMessage(context, "No tienes conexión a internet");
                               }
                             },
                           ),

@@ -54,25 +54,30 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
       final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
       final placesProvider = Provider.of<PlacesProvider>(context, listen: false);
       final artistProvider = Provider.of<ArtistsProvider>(context, listen: false);
-      await Future.wait([
-        artistProvider.getArtists(search: null, limit: 150, offset: 0),
-        placesProvider.getNeighborhoods(),
-        categoriesProvider.getEventCategory(),
-        eventsProvider.getAudienceEventsAll(
-          offset: _offset,
-          limit: _limit,
-          search: _search,
-          fromDate:  _fromDate,
-          toDate: _toDate,
-          fromTime:  _fromTime,
-          toTime: _toTime,
-          neighborhoods: _neighborhoods,
-          artists: _artist,
-          rating: _rating,
-          categories: _categories.length > 0 ? _categories : null,
-          distance: _searchDistance ? _distance : null,
-        ),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          artistProvider.getArtists(search: null, limit: 150, offset: 0),
+          placesProvider.getNeighborhoods(),
+          categoriesProvider.getEventCategory(),
+          eventsProvider.getAudienceEventsAll(
+            offset: _offset,
+            limit: _limit,
+            search: _search,
+            fromDate:  _fromDate,
+            toDate: _toDate,
+            fromTime:  _fromTime,
+            toTime: _toTime,
+            neighborhoods: _neighborhoods,
+            artists: _artist,
+            rating: _rating,
+            categories: _categories.length > 0 ? _categories : null,
+            distance: _searchDistance ? _distance : null,
+          ),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -94,9 +99,34 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(width: 3,),
                       Text("Filtrar", style: title1.copyWith(color: greyLightColor),),
+                      CustomGeneralButton(
+                        onPressed: () async {
+                          setState(() => _isLoading = true );
+                          _search = null;
+                          _fromDate = null;
+                          _toDate = null;
+                          _fromTime = null;
+                          _toTime = null;
+                          _neighborhoodsName = null;
+                          _neighborhoods = null;
+                          _artist = null;
+                          _artistName = null;
+                          _rating = null;
+                          _categories = [];
+                          _distance = 10;
+                          _searchDistance = false;
+                          await _getItems();
+                          setState(() => _isLoading = false );
+                        },
+                        loading: _isLoading,
+                        color: AppTheme.getTheme().colorScheme.primary,
+                        text: "Limpiar filtros",
+                        width: 135,
+                        height: 40, 
+                      ),  
                     ],
                   ),
                   SizedBox(height: 10,),
@@ -127,8 +157,8 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                   _iconFieldItem(Icons.location_on, "${_neighborhoods == null ? 'Barrio' : _neighborhoodsName}", _showDialogPlaces),
                   Divider(),
                   _iconFieldItem(Icons.person, "${_artist == null ? 'Artista' : _artistName}", _showDialogArtists),
-                  Divider(),
-                  _iconFieldItem(Icons.star, _rating == null ? 'Calificación' : "$_rating Estrellas" , _showDialogRating),
+                  //Divider(),
+                  //_iconFieldItem(Icons.star, _rating == null ? 'Calificación' : "$_rating Estrellas" , _showDialogRating),
                   Divider(),
                   Container(
                     child: Column(
@@ -196,10 +226,11 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                       CustomGeneralButton(
                         onPressed: () async {
                           setState(() => _isLoading = true );
-                          _getItems();
+                          await _getItems();
+                          Navigator.pop(context);
                           setState(() => _isLoading = false );
                         },
-                        loading: _isSaving,
+                        loading: _isLoading,
                         color: AppTheme.getTheme().colorScheme.primary,
                         text: "Aplicar",
                         width: 200,
@@ -213,9 +244,7 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
           ),
         ),
       ),
-      body: _isLoading ? Center(
-          child: CircularProgressIndicator(),
-        ) : SafeArea(
+      body: SafeArea(
         child: Container(
           height: double.infinity,
           width: double.infinity,
@@ -245,14 +274,36 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
                 ],
               ),
               SizedBox(height: 15,), 
-              CustomTextfield(
-                onChanged: (value){
-                  _search = value;
-                  setState(() => _isLoading = true );
-                  _getItems();
-                  setState(() => _isLoading = false );
-                },
-                label: "Buscar",
+              Row(
+                children: [
+                  SizedBox(width: 8,),
+                  Expanded(
+                    child: CustomTextfield(
+                      onChanged: (value){
+                        _search = value;
+                      },
+                      label: "Escribir nombre de evento",
+                    ),
+                  ),
+                  SizedBox(width: 8,),
+                  CustomGeneralButton(
+                    height: 45,
+                    loading: _isLoading,
+                    text: "Buscar",
+                    width: 100,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await _getItems();
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                    color: secondaryColor,
+                  ),
+                  SizedBox(width: 8,),
+                ],
               ),
               SizedBox(height: 20,),
               Expanded(
@@ -266,48 +317,60 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
   }
 
   Widget _eventsList(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Consumer<EventsProvider>(
-        builder: (ctx, eventsProvider, _){
-          if(eventsProvider.audienceEventsAll.length > 0)
-            return RefreshIndicator(
-              onRefresh: () async {
-                _getItems();
-              },
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollInfo){
-                  if (!_isLoadingPagination && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                    if(eventsProvider.audienceAllEventstotalItems > _limit){
-                      paginacion(context);
-                    }
-                    return true;
-                  }
-                  return false;
+    return _isLoading ? Center(
+          child: CircularProgressIndicator(),
+        ) : Container(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Consumer<EventsProvider>(
+          builder: (ctx, eventsProvider, _){
+            if(eventsProvider.audienceEventsAll.length > 0)
+              return RefreshIndicator(
+                onRefresh: () async {
+                  _getItems();
                 },
-                child: Scrollbar(
-                  child: ListView.builder(
-                    itemCount: eventsProvider.audienceEventsAll.length,
-                    itemBuilder: (context, index) {
-                      if(index+1 == eventsProvider.audienceEventsAll.length){
-                        return Column(
-                          children: [
-                            EventItem(event: eventsProvider.audienceEventsAll[index],),
-                            SizedBox(height: 150,)
-                          ],
-                        );
-                      }else{
-                        return EventItem(event: eventsProvider.audienceEventsAll[index],);
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo){
+                    if (!_isLoadingPagination && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                      if(eventsProvider.audienceAllEventstotalItems > _limit){
+                        paginacion(context);
                       }
+                      return true;
                     }
-                  )
+                    return false;
+                  },
+                  child: Scrollbar(
+                    child: ListView.builder(
+                      itemCount: eventsProvider.audienceEventsAll.length,
+                      itemBuilder: (context, index) {
+                        if(index+1 == eventsProvider.audienceEventsAll.length){
+                          return Column(
+                            children: [
+                              EventItem(event: eventsProvider.audienceEventsAll[index],),
+                              SizedBox(height: 150,)
+                            ],
+                          );
+                        }else{
+                          return EventItem(event: eventsProvider.audienceEventsAll[index],);
+                        }
+                      }
+                    )
+                  ),
+                ),
+              );
+            return Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.filter_list, color: greyColor, size: 35,),
+                    Text("No hemos encontrado ningún evento", style: text3.copyWith(color: greyColor),),
+                  ],
                 ),
               ),
             );
-          return EmptyList(color: greyLightColor,);
-        },
-      ),
-    );
+          },
+        ),
+      );
   }
 
   Widget _iconFieldItem(IconData icon, String text, Function(BuildContext context) onPress){
@@ -612,23 +675,28 @@ class _SearchEventScreenState extends State<SearchEventScreen> {
     _isLoadingPagination = false;
   }
 
-  void _getItems() async {
+  Future<void> _getItems() async {
     final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-    await Future.wait([
-      eventsProvider.getAudienceEventsAll(
-        offset: _offset,
-        limit: _limit,
-        search: _search,
-        fromDate:  _fromDate,
-        toDate: _toDate,
-        fromTime:  _fromTime,
-        toTime: _toTime,
-        neighborhoods: _neighborhoods,
-        artists: _artist,
-        rating: _rating,
-        categories: _categories.length > 0 ? _categories : null,
-        distance: _searchDistance ? _distance : null,
-      ),
-    ]);
+    bool internet = await check(context);
+    if(internet){
+      await Future.wait([
+        eventsProvider.getAudienceEventsAll(
+          offset: _offset,
+          limit: _limit,
+          search: _search,
+          fromDate:  _fromDate,
+          toDate: _toDate,
+          fromTime:  _fromTime,
+          toTime: _toTime,
+          neighborhoods: _neighborhoods,
+          artists: _artist,
+          rating: _rating,
+          categories: _categories.length > 0 ? _categories : null,
+          distance: _searchDistance ? _distance : null,
+        ),
+      ]);
+    }else{
+      showErrorMessage(context, "No tienes conexión a internet");
+    }
   }
 }

@@ -215,22 +215,27 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   }
 
   void _forgetPassword(BuildContext context) async {
-    if (!_formKey.currentState.validate()) {
-      return;
+    bool internet = await check(context);
+    if(internet){
+      if (!_formKey.currentState.validate()) {
+        return;
+      }
+      _formKey.currentState.save();
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<AuthProvider>(context, listen: false).forgetPassword(_email);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        _showMessage = true;
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexión a internet");
     }
-    _formKey.currentState.save();
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<AuthProvider>(context, listen: false).forgetPassword(_email);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      _showMessage = true;
-    }else{ 
-      showErrorMessage(context, resp["message"]);
-    }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

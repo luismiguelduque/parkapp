@@ -80,7 +80,7 @@ class _ArtistsAllTabState extends State<ArtistsAllTab> {
                   artistsProvider.getArtistsAudience(null, _offset, _limit),
                 ]);
               }else{
-                showErrorMessage(context, "No tienes conexion a internet");
+                showErrorMessage(context, "No tienes conexión a internet");
               }
             },
             child: NotificationListener<ScrollNotification>(

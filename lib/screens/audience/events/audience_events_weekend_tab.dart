@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -44,11 +45,16 @@ class _AudienceEventsWeekendTabState extends State<AudienceEventsWeekendTab> {
         if(eventsProvider.audienceEventsWeekend.length > 0)
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                eventsProvider.getAudienceEventsClose(),
-                eventsProvider.getAudienceEventsNow(),
-                eventsProvider.getAudienceEventsWeekend(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  eventsProvider.getAudienceEventsClose(),
+                  eventsProvider.getAudienceEventsNow(),
+                  eventsProvider.getAudienceEventsWeekend(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexión a internet");
+              }
             },
             child: Scrollbar(
               child: ListView.builder(

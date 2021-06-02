@@ -30,7 +30,12 @@ class _AdminProfoleScreenState extends State<AdminProfoleScreen> {
   void didChangeDependencies() async {
     if (!_isLoaded) {
       _isLoading = true;
-      await Provider.of<AuthProvider>(context, listen: false).getUser();
+      bool internet = await check(context);
+      if(internet){
+        await Provider.of<AuthProvider>(context, listen: false).getUser();
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
       });
@@ -202,25 +207,30 @@ class _AdminProfoleScreenState extends State<AdminProfoleScreen> {
                               textStyle: title3,
                               width: size.width*0.6,
                               onPressed: _isSaving ? null : () async {
-                                if (!_formKey.currentState.validate()) {
-                                  return;
-                                }
-                                _formKey.currentState.save();
-                                setState(() {
-                                  _isLoading = true;
-                                  _showAccess = false;
-                                  _isSaving = true;
-                                });
-                                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                                Map<String, dynamic> response = await authProvider.changePassword(_currentPassword, _newPassword, _repeatNewPassword);
-                                setState((){
-                                  _isSaving = false;
-                                });
-                                if (response['success']) {
-                                  Navigator.of(context).pushNamed('admin-profile');
-                                  showSuccessMessage(context, response['message']);
-                                } else {
-                                  showErrorMessage(context, response['message']);
+                                bool internet = await check(context);
+                                if(internet){
+                                  if (!_formKey.currentState.validate()) {
+                                    return;
+                                  }
+                                  _formKey.currentState.save();
+                                  setState(() {
+                                    _isLoading = true;
+                                    _showAccess = false;
+                                    _isSaving = true;
+                                  });
+                                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                                  Map<String, dynamic> response = await authProvider.changePassword(_currentPassword, _newPassword, _repeatNewPassword);
+                                  setState((){
+                                    _isSaving = false;
+                                  });
+                                  if (response['success']) {
+                                    Navigator.of(context).pushNamed('admin-profile');
+                                    showSuccessMessage(context, response['message']);
+                                  } else {
+                                    showErrorMessage(context, response['message']);
+                                  }
+                                }else{
+                                  showErrorMessage(context, "No tienes conexión a internet");
                                 }
                               },
                             ),

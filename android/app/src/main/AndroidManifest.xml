@@ -3,6 +3,7 @@
    <application
         android:label="Park App"
         android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true"
         android:allowBackup = "false">
         <activity
             android:requestLegacyExternalStorage="true"
@@ -41,6 +42,27 @@
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDjMLLsEOu0YNxDRMeQSjmZ9SuutFJuX1E"/>
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/> 
+        <activity android:name="com.facebook.FacebookActivity" android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" /> 
+            <activity android:name="com.facebook.CustomTabActivity" android:exported="true"> 
+            <intent-filter> <action android:name="android.intent.action.VIEW" /> 
+                <category android:name="android.intent.category.DEFAULT" /> 
+                <category android:name="android.intent.category.BROWSABLE" /> 
+                <data android:scheme="@string/fb_login_protocol_scheme" /> 
+            </intent-filter> 
+        </activity>
+  
+        <activity android:name="clancey.simpleauth.simpleauthflutter.SimpleAuthCallbackActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="parkapp.alternativasinteligentes.com/" />
+            </intent-filter>
+        </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

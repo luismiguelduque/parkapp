@@ -37,19 +37,24 @@ class _AudienceEventsScreenState extends State<AudienceEventsScreen> {
       final usersProvider = Provider.of<UsersProvider>(context, listen: false);
       final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
       await usersProvider.setUserLocation(_currentPosition.latitude.toString(), _currentPosition.longitude.toString());
-      await Future.wait([
-        eventsProvider.getAudienceEventsClose(),
-        eventsProvider.getAudienceEventsNow(),
-        eventsProvider.getAudienceEventsWeekend(),
-      ]);
-      FirebaseMessaging fbm = FirebaseMessaging.instance;
-      final _phoneToken = await fbm.getToken();
-      usersProvider.setUserFCM(_phoneToken);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          eventsProvider.getAudienceEventsClose(),
+          eventsProvider.getAudienceEventsNow(),
+          eventsProvider.getAudienceEventsWeekend(),
+        ]);
+        FirebaseMessaging fbm = FirebaseMessaging.instance;
+        final _phoneToken = await fbm.getToken();
+        usersProvider.setUserFCM(_phoneToken);
+        sendFirstMessage();
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
         _isLoaded = true;
       });
-      sendFirstMessage();
     }
     super.didChangeDependencies();
   }

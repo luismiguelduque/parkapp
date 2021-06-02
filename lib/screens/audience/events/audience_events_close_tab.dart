@@ -23,13 +23,18 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
   bool _isLoaded = false;
   bool _isSaving = false;
   final _preferences = new Preferences();
+  bool _showMap = false;
 
-   @override
+  @override
   void didChangeDependencies() async {
     if(!_isLoaded){
       setCustomMapPin();
       _isLoaded = true;
     }
+    await Future.delayed(const Duration(milliseconds: 10), (){});
+    setState(() {
+      _showMap = true;
+    });
     super.didChangeDependencies();
   }
 
@@ -57,7 +62,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Eventos cerca de ti", style: TextStyle(color: AppTheme.getTheme().colorScheme.secondary, fontSize: 18, fontWeight: FontWeight.w500),),
+                    Text("Eventos de hoy", style: TextStyle(color: AppTheme.getTheme().colorScheme.secondary, fontSize: 18, fontWeight: FontWeight.w500),),
                     /*
                     Row(
                       children: [
@@ -77,7 +82,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
               Expanded(
                 child: Stack(
                   children: [
-                    CustomMapWidget(
+                    _showMap ? CustomMapWidget(
                       allowMarker: false,
                       onCLick: (val){},
                       markers: eventsProvider.audienceEventsClose.map((event) {
@@ -90,7 +95,7 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                           )
                         );
                       }).toList(),
-                    ),
+                    ) : Container(),
                     Positioned(
                       bottom: 0,
                       child: Container(
@@ -161,42 +166,47 @@ class _AudienceEventsCloseTabState extends State<AudienceEventsCloseTab> {
                   left: 7,
                   child: GestureDetector(
                     onTap: () async {
-                      if(!_isSaving){
-                        if(event.scheduled == 2){
-                          setState(() => _isSaving = true );
-                          final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                          final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
-                          await Future.wait([
-                            eventsProvider.getUserSheduledEvent(),
-                            eventsProvider.getAudienceEventsClose(),
-                            eventsProvider.getAudienceEventsNow(),
-                            eventsProvider.getAudienceEventsWeekend(),
-                            eventsProvider.getAudienceEventsAll()
-                          ]);
-                          setState(() => _isSaving = false );
-                          if (resp['success']) {
-                            showSuccessMessage(context, resp["message"]);
-                          }else{ 
-                            showErrorMessage(context, resp["message"]);
-                          }
-                        }else{
-                          setState(() => _isSaving = true );
-                          final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
-                          final resp = await eventsProvider.unScheduleEvent(event.id);
-                          await Future.wait([
-                            eventsProvider.getUserSheduledEvent(),
-                            eventsProvider.getAudienceEventsClose(),
-                            eventsProvider.getAudienceEventsNow(),
-                            eventsProvider.getAudienceEventsWeekend(),
-                            eventsProvider.getAudienceEventsAll()
-                          ]);
-                          setState(() => _isSaving = false );
-                          if (resp['success']) {
-                            showSuccessMessage(context, resp["message"]);
-                          }else{ 
-                            showErrorMessage(context, resp["message"]);
+                      bool internet = await check(context);
+                      if(internet){
+                        if(!_isSaving){
+                          if(event.scheduled == 2){
+                            setState(() => _isSaving = true );
+                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                            final resp = await eventsProvider.scheduleEvent(event.id, _preferences.userId);
+                            await Future.wait([
+                              eventsProvider.getUserSheduledEvent(),
+                              eventsProvider.getAudienceEventsClose(),
+                              eventsProvider.getAudienceEventsNow(),
+                              eventsProvider.getAudienceEventsWeekend(),
+                              eventsProvider.getAudienceEventsAll()
+                            ]);
+                            setState(() => _isSaving = false );
+                            if (resp['success']) {
+                              showSuccessMessage(context, resp["message"]);
+                            }else{ 
+                              showErrorMessage(context, resp["message"]);
+                            }
+                          }else{
+                            setState(() => _isSaving = true );
+                            final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
+                            final resp = await eventsProvider.unScheduleEvent(event.id);
+                            await Future.wait([
+                              eventsProvider.getUserSheduledEvent(),
+                              eventsProvider.getAudienceEventsClose(),
+                              eventsProvider.getAudienceEventsNow(),
+                              eventsProvider.getAudienceEventsWeekend(),
+                              eventsProvider.getAudienceEventsAll()
+                            ]);
+                            setState(() => _isSaving = false );
+                            if (resp['success']) {
+                              showSuccessMessage(context, resp["message"]);
+                            }else{ 
+                              showErrorMessage(context, resp["message"]);
+                            }
                           }
                         }
+                      }else{
+                        showErrorMessage(context, "No tienes conexión a internet");
                       }
                     },
                     child: Stack(

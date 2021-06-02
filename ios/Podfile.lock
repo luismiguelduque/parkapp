@@ -222,6 +222,9 @@ PODS:
     - Firebase/Firestore (= 7.3.0)
     - firebase_core
     - Flutter
+  - connectivity (0.0.1):
+    - Flutter
+    - Reachability
   - Firebase/Auth (7.3.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 7.3.0)
@@ -233,7 +236,7 @@ PODS:
   - Firebase/Messaging (7.3.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 7.3.0)
-  - firebase_auth (1.0.2):
+  - firebase_auth (1.0.3):
     - Firebase/Auth (= 7.3.0)
     - firebase_core
     - Flutter
@@ -355,13 +358,17 @@ PODS:
   - nanopb/decode (2.30906.0)
   - nanopb/encode (2.30906.0)
   - PromisesObjC (1.2.12)
+  - Reachability (3.2)
   - shared_preferences (0.0.1):
+    - Flutter
+  - simple_auth_flutter (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -372,6 +379,7 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - simple_auth_flutter (from `.symlinks/plugins/simple_auth_flutter/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
@@ -395,10 +403,13 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
+    - Reachability
 
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  connectivity:
+    :path: ".symlinks/plugins/connectivity/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -419,6 +430,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location_permissions/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  simple_auth_flutter:
+    :path: ".symlinks/plugins/simple_auth_flutter/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
@@ -426,8 +439,9 @@ SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: d5902cdb3c48c2e8c73cd093fc9471ebe7f44a4c
+  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
-  firebase_auth: 9e9e667b904ee5701ab50330a5718cce0bf1a469
+  firebase_auth: c2c27e1081671b02f90981e70dad54722198491f
   firebase_core: b5d81dfd4fb2d6f700e67de34d9a633ae325c4e9
   firebase_messaging: 7547c99f31466371f9cfcb733d5a1bf32a819872
   FirebaseAuth: c224a0cf1afa0949bd5c7bfcf154b4f5ce8ddef2
@@ -452,7 +466,9 @@ SPEC CHECKSUMS:
   location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  simple_auth_flutter: ec585a6e96b415247120df0a33af43dc1d2a5839
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: 6ee0345879a5000de45f53718aa4ac6a11073efb

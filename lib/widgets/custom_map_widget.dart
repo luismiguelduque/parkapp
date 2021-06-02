@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,44 +26,38 @@ class CustomMapWidget extends StatefulWidget {
 
 class _CustomMapWidgetState extends State<CustomMapWidget> {
   
-  GoogleMapController mapController;
+  Completer<GoogleMapController> _controller = Completer();
   Position _currentPosition;
   
   CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
   bool _isLoaded = false;
 
-   @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
-  }
-  
   @override
   void didChangeDependencies() async {
     if(!_isLoaded){
       _currentPosition = await getCurrentUserLocation();
-      _animateMapCamera();
       if(this.mounted) {
         _isLoaded = true;
       }
+      await Future.delayed(const Duration(milliseconds: 10), (){});
+      _animateMapCamera();
     }
     super.didChangeDependencies();
   }
   
-  void _animateMapCamera(){
-    if(this.mounted) {
-      try{
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
-              zoom: 14.0,
-            ),
+  void _animateMapCamera() async {
+    try{
+      if(this.mounted) {
+        final GoogleMapController controller = await _controller.future;
+        controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: widget.useLocation ? LatLng(_currentPosition.latitude, _currentPosition.longitude) : LatLng(widget.markers.first.position.latitude, widget.markers.first.position.longitude),
+            zoom: 14.0,
           ),
-        );    
-      }catch(error){
-        print(error);
-      }       
+        ));
+      }
+    }catch(error){
+      print(error);
     }
   }
 
@@ -78,21 +73,20 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         zoomControlsEnabled: false,
         markers: Set<Marker>.of(widget.markers),
         onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
+          _controller.complete(controller);
         },
         onTap: widget.allowMarker == true ? (value){
           widget.onCLick(value);
-          if(widget.markers.length == 0){
-            setState(() {
-              widget.markers.add(Marker(
-                markerId: MarkerId(value.toString()),
-                position: value,
-                infoWindow: InfoWindow(
-                  title: 'I am a marker',
-                ),
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
-              ));
-            });
+          if(widget.markers != null || widget.allowMarker){
+            widget.markers.insert(0, Marker(
+              markerId: MarkerId(value.toString()),
+              position: value,
+              infoWindow: InfoWindow(
+                title: 'Tu marcador',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+            ));
+            setState((){ });
           }
         }
         : null,

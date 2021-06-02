@@ -53,7 +53,7 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
           Provider.of<GenresProvider>(context, listen: false).getArtisticGenres(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       setState(() {
         _tempArtist = artistsProvider.artistDetail;
@@ -97,7 +97,7 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
                         style: TextStyle(
                           color: AppTheme.getTheme().colorScheme.secondary, 
                           fontWeight: FontWeight.bold, 
-                          fontSize: 25,
+                          fontSize: 23,
                         ),
                       ),
                     ],
@@ -164,8 +164,6 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
                         ),
                         Divider(),
 
-
-
                         if(_tempArtist.profileImage == '') 
                           _iconFieldItem(Icons.attach_file, _profileImage == null ? "Adjuntar foto de perfil" : "Cambiar foto de perfil", _openGalleryProfile)
                         else 
@@ -216,11 +214,6 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
                             ),
                           ),
                         _showErrors == true ? CustomErrorMessage(message: _errors['coverImage']) : Container(),
-
-
-
-
-
 
                         /*
                         _iconFieldItem(Icons.attach_file, _profileImage == null ? "Adjuntar foto de perfil" : "Cambiar foto de perfil", _openGalleryProfile),
@@ -392,9 +385,9 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Row(
           children: [
-            Icon(icon, size: 32, color: AppTheme.getTheme().colorScheme.secondary,),
-            SizedBox(width: 15,),
-            Text(text, style: TextStyle(fontSize: 18),),
+            Icon(icon, size: 25, color: AppTheme.getTheme().colorScheme.secondary,),
+            SizedBox(width: 10,),
+            Text(text, style: TextStyle(fontSize: 16),),
           ],
         ),
       ),
@@ -402,42 +395,55 @@ class _ArtistProfileFormState extends State<ArtistProfileForm> {
   }
 
   void _openGalleryProfile(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _profileImage = File(pickedFile.path);
-    });
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }catch(error){
+      print(error);
+    }
   }
 
   void _openGalleryCover(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _coverImage =  File(pickedFile.path);
-    });
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _coverImage =  File(pickedFile.path);
+      });
+    }catch(error){
+      print(error);
+    }
   }
 
   void _save() async {
-    setState(() {
-      _isSaving = true;
-    });
-    final resp = await Provider.of<ArtistsProvider>(context, listen: false).updateArtist(_tempArtist, _profileImage, _coverImage, _preferences.artistId);
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      Navigator.of(context).pushNamed("artist-profile-options");
-    }else{ 
-      showErrorMessage(context, resp["message"]);
+    bool internet = await check(context);
+    if(internet){
+      setState(() {
+        _isSaving = true;
+      });
+      final resp = await Provider.of<ArtistsProvider>(context, listen: false).updateArtist(_tempArtist, _profileImage, _coverImage, _preferences.artistId);
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        Navigator.of(context).pushNamed("artist-profile-options");
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexión a internet");
     }
-    setState(() {
-      _isSaving = false;
-    });
   }
 
 }

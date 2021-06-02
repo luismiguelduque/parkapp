@@ -41,7 +41,7 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
           chatProvider.getAdminAllConversation(),
         ]);
       }else{
-        showErrorMessage(context, "No tienes conexion a internet");
+        showErrorMessage(context, "No tienes conexión a internet");
       }
       
       setState(() {
@@ -102,7 +102,7 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                                 artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: value),
                               ]);
                             }else{
-                              showErrorMessage(context, "No tienes conexion a internet");
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                             setState(() { 
                               _isLoadingSearch = false;
@@ -125,7 +125,7 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
                                 artistsProvider.getArtistsSuspensions(limit: _limit, offset: _offset, search: null),
                               ]);
                             }else{
-                              showErrorMessage(context, "No tienes conexion a internet");
+                              showErrorMessage(context, "No tienes conexión a internet");
                             }
                             if(this.mounted) {
                               setState(() { _isLoadingSearch = false; });
@@ -168,13 +168,13 @@ class _AdminArtistsScreenState extends State<AdminArtistsScreen> {
         unselectedLabelColor: Colors.grey,
         tabs: [
           Tab(
-            child: Text("Todos", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Todos", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
           Tab(
-            child: Text("Solicitudes", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Solicitudes", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
           Tab(
-            child: Text("Suspensiones", style: TextStyle(fontSize: 14), softWrap: false,),
+            child: Text("Suspensiones", style: TextStyle(fontSize: 13), softWrap: false,),
           ),
         ],
       ),

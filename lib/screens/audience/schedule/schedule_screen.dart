@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   void didChangeDependencies() async {
     if (!_isLoaded) {
       _isLoading = true;
-      await Provider.of<EventsProvider>(context, listen: false).getUserSheduledEvent();
+      bool internet = await check(context);
+      if(internet){
+        await Provider.of<EventsProvider>(context, listen: false).getUserSheduledEvent();
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
       });
@@ -114,9 +120,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         if(eventsProvider.scheduledEvents.length > 0) {
           return RefreshIndicator(
             onRefresh: () async {
-              await Future.wait([
-                eventsProvider.getUserSheduledEvent(),
-              ]);
+              bool internet = await check(context);
+              if(internet){
+                await Future.wait([
+                  eventsProvider.getUserSheduledEvent(),
+                ]);
+              }else{
+                showErrorMessage(context, "No tienes conexión a internet");
+              }
             },
             child: Scrollbar(
               child: ListView.builder(

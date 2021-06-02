@@ -59,10 +59,15 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
       final categoriesProvider = Provider.of<CategoriesProvider>(context, listen: false);
       final eventsProvider = Provider.of<EventsProvider>(context, listen: false);
       _eventId = ModalRoute.of(context).settings.arguments;
-      await Future.wait([
-        categoriesProvider.getEventCategory(),
-        if (_eventId != null) eventsProvider.getEventDetail(_eventId),
-      ]);
+      bool internet = await check(context);
+      if(internet){
+        await Future.wait([
+          categoriesProvider.getEventCategory(),
+          if (_eventId != null) eventsProvider.getEventDetail(_eventId),
+        ]);
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       if (_eventId != null) {
         setState(() {
           _profileImageUrl = eventsProvider.eventDetail.profileImage;
@@ -127,7 +132,6 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                     ],
                                   ),
                                 ),
-
                                 SizedBox(height: 5,),
                                 Consumer<CategoriesProvider>(
                                   builder: (ctx, categoriesProvider, _){
@@ -208,10 +212,6 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                   },
                                 ),
                                 Divider(),
-
-
-
-
                                 if(_eventId == null || _profileImageUrl == '') 
                                   _iconFieldItem(Icons.attach_file, _profileImage == null ? "Adjuntar foto de perfil" : "Cambiar foto de perfil", _openGalleryProfile)
                                 else 
@@ -262,10 +262,6 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
                                     ),
                                   ),
                                 _showErrors == true ? CustomErrorMessage(message: _errors['coverImage']) : Container(),
-
-
-
-
                                 Divider(),
                                 CustomTextfield(
                                   value: eventsProvider.eventDetail.urlVideo ?? '',
@@ -560,9 +556,9 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
         margin: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
-            Icon(icon, size: 32, color: AppTheme.getTheme().colorScheme.secondary,),
-            SizedBox(width: 15,),
-            Text(text, style: TextStyle(fontSize: 18),),
+            Icon(icon, size: 25, color: AppTheme.getTheme().colorScheme.secondary,),
+            SizedBox(width: 10,),
+            Text(text, style: TextStyle(fontSize: 16),),
           ],
         ),
       ),
@@ -711,68 +707,85 @@ class _ArtistEventFormScreenState extends State<ArtistEventFormScreen> {
   }
 
   void _openGalleryProfile(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _profileImage = File(pickedFile.path);
-    });
-    if(_profileImage != null){
-      _errors['profileImage'] = '';
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+      if(_profileImage != null){
+        _errors['profileImage'] = '';
+      }
+    }catch(error){
+      print(error);
     }
   }
 
   void _openGalleryCover(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _coverImage =  File(pickedFile.path);
-    });
-    if(_coverImage != null){
-      _errors['coverImage'] = '';
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _coverImage =  File(pickedFile.path);
+      });
+      if(_coverImage != null){
+        _errors['coverImage'] = '';
+      }
+    }catch(error){
+      print(error);
     }
   }
 
   void _openGalleryImages(BuildContext context) async {
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-      imageQuality: 95,
-      maxWidth: 700,
-    );
-    setState(() {
-      _images.add(File(pickedFile.path));
-    });
+    try{
+      final pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+        maxWidth: 700,
+      );
+      setState(() {
+        _images.add(File(pickedFile.path));
+      });
+    }catch(error){
+      print(error);
+    }
   }
 
   void _save() async {
-    if (!_formKey.currentState.validate() || _tempEvent.date == null || _tempEvent.start == null || _tempEvent.end == null || (_eventId == null && _profileImage == null) || (_eventId != null && (_profileImageUrl == '' && _profileImage == null)) || _categories.length == 0) {
-      setState(() {_showErrors = true;});
-      return;
+    bool internet = await check(context);
+    if(internet){
+      if (!_formKey.currentState.validate() || _tempEvent.date == null || _tempEvent.start == null || _tempEvent.end == null || (_eventId == null && _profileImage == null) || (_eventId != null && (_profileImageUrl == '' && _profileImage == null)) || _categories.length == 0) {
+        setState(() {_showErrors = true;});
+        return;
+      }
+      _formKey.currentState.save();
+      setState(() {
+        _isSaving = true;
+      });
+      Map<String, dynamic> resp;
+      if (_eventId != null) {
+        resp = await Provider.of<EventsProvider>(context, listen: false).updateEvent(_tempEvent, _profileImage, _coverImage, _categories, _eventId, _images);
+      } else {
+        resp = await Provider.of<EventsProvider>(context, listen: false).store(_tempEvent, _profileImage, _coverImage, _categories, _images);
+      }
+      if (resp['success']) {
+        showSuccessMessage(context, resp["message"]);
+        await Future.delayed(const Duration(seconds: 3), (){});
+        Navigator.of(context).pushNamed("artist-events");
+      }else{ 
+        showErrorMessage(context, resp["message"]);
+      }
+      setState(() {
+        _isSaving = false;
+      });
+    }else{
+      showErrorMessage(context, "No tienes conexión a internet");
     }
-    _formKey.currentState.save();
-    setState(() {
-      _isSaving = true;
-    });
-    Map<String, dynamic> resp;
-    if (_eventId != null) {
-      resp = await Provider.of<EventsProvider>(context, listen: false).updateEvent(_tempEvent, _profileImage, _coverImage, _categories, _eventId, _images);
-    } else {
-      resp = await Provider.of<EventsProvider>(context, listen: false).store(_tempEvent, _profileImage, _coverImage, _categories, _images);
-    }
-    if (resp['success']) {
-      showSuccessMessage(context, resp["message"]);
-      await Future.delayed(const Duration(seconds: 3), (){});
-      Navigator.of(context).pushNamed("artist-events");
-    }else{ 
-      showErrorMessage(context, resp["message"]);
-    }
-    setState(() {
-      _isSaving = false;
-    });
   }
 }

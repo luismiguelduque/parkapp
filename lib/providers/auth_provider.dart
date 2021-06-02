@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import '../utils/constants.dart';
 import '../utils/preferences.dart';
+import '../utils/functions.dart';
 
 class AuthProvider with ChangeNotifier {
   
@@ -28,7 +29,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> getUser() async {
-    final Uri uri = Uri.https(apiUrl, "api/users/${_preferences.userId}", {});
+    final Uri uri = developmentMode ? Uri.https(apiUrl, "api/users/${_preferences.userId}", {}) : Uri.http(apiUrl, "api/users/${_preferences.userId}", {});
     try {
       final response = await http.get(
         uri, 
@@ -52,7 +53,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logInFacebook(String token) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/sign-in-with-facebook", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/sign-in-with-facebook", {}) : Uri.http(apiUrl, "api/auth/sign-in-with-facebook", {});
     try {
       final response = await http.post(
         uri, 
@@ -95,7 +96,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logInInstagram(String token) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/sign-in-with-instagram", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/sign-in-with-instagram", {}) : Uri.http(apiUrl, "api/auth/sign-in-with-instagram", {});
     try {
       final response = await http.post(
         uri, 
@@ -136,7 +137,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> changePassword(String currentPassword, String password, String repeatPassword) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/change-password", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/change-password", {}) : Uri.http(apiUrl, "api/auth/change-password", {});
     try {
       final response = await http.post(
         uri, 
@@ -170,7 +171,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> forgetPassword(String email) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/resset-password/$email", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/resset-password/$email", {}) : Uri.http(apiUrl, "api/auth/resset-password/$email", {});
     try {
       final response = await http.post(
         uri, 
@@ -198,7 +199,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logIn(String email, String password) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/login", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/login", {}) : Uri.http(apiUrl, "api/auth/login", {});
     try {
       final response = await http.post(
         uri,
@@ -239,7 +240,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> signUp(UserModel user) async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/register", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/register", {}) : Uri.http(apiUrl, "api/auth/register", {});
     try{
       final response = await http.post(
         uri, 
@@ -280,7 +281,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> logOut() async {
     Map<String, dynamic> respJson = {};
-    final Uri uri = Uri.https(apiUrl, "api/auth/logout", {});
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/logout", {}) : Uri.http(apiUrl, "api/auth/logout", {});
     try{
       final response = await http.post(
         uri, 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkapp/providers/artists_provider.dart';
 import 'package:parkapp/utils/constants.dart';
+import 'package:parkapp/utils/functions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,12 @@ class _ArtistEventsResumeTabState extends State<ArtistEventsResumeTab> {
   void didChangeDependencies() async {
     if (!_isLoaded) {
       _isLoading = true;
-      await Provider.of<ArtistsProvider>(context, listen: false).getArtistIndicators();
+      bool internet = await check(context);
+      if(internet){
+        await Provider.of<ArtistsProvider>(context, listen: false).getArtistIndicators();
+      }else{
+        showErrorMessage(context, "No tienes conexión a internet");
+      }
       setState(() {
         _isLoading = false;
       });

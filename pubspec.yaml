@@ -41,6 +41,7 @@ dependencies:
   date_format: ^2.0.2
   geolocator: ^7.0.1
   intl: ^0.17.0
+  flutter_facebook_login: ^3.0.0
   google_maps_flutter: ^2.0.3
   flutter_page_indicators: ^0.0.1
   firebase_core: ^1.0.3
@@ -49,19 +50,28 @@ dependencies:
   cloud_firestore: ^1.0.4
   flushbar: ^1.10.4
   connectivity: ^3.0.3
+  simple_auth:
+    git: 
+      url: https://github.com/luismiguelduque/simple_auth.git
+      ref: master
+  simple_auth_flutter:
+    git: 
+      url: https://github.com/luismiguelduque/simple_auth_flutter.git
+      ref: main
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.9.0 
+
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/images/simple-icon.png"
-  adaptive_icon_background: "assets/images/icon.png"
+  image_path: "assets/images/icono-appstore.png"
+  adaptive_icon_background: "assets/images/icono-appstore.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -53,7 +56,7 @@ class _ImagesSlideState extends State<ImagesSlide> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
-        color: greyVeryLightColor,
+        //color: greyVeryLightColor,
         borderRadius: BorderRadius.circular(15.0),
       ),
       margin: EdgeInsets.only(right: 10.0),
@@ -63,15 +66,21 @@ class _ImagesSlideState extends State<ImagesSlide> {
         height: width * 0.3,
         child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15.0),
-              child: FadeInImage(
-                width: width * 0.3,
-                placeholder: AssetImage("assets/images/loading.gif"),
-                image: image != null ? NetworkImage(image.image) : AssetImage("assets/images/no-image.png"),
-                fit: BoxFit.cover,
+            GestureDetector(
+              onTap: (){
+                _showDialog(context, image.image);
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: FadeInImage(
+                  width: width * 0.3,
+                  placeholder: AssetImage("assets/images/loading.gif"),
+                  image: image != null ? NetworkImage(image.image) : AssetImage("assets/images/no-image.png"),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
+            /*
             Positioned(
               bottom: 0,
               right: 0,
@@ -86,6 +95,7 @@ class _ImagesSlideState extends State<ImagesSlide> {
                 ),
               ),
             ),
+            */
             if(widget.isDeleted)
               Positioned(
                 top: -12,
@@ -103,26 +113,57 @@ class _ImagesSlideState extends State<ImagesSlide> {
     );
   }
   
-  void _showDialog(BuildContext context, String image) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return  Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(image),
-                    fit: BoxFit.contain
-                  )
-                ),
+  _showDialog(BuildContext context, String image) {
+    final size = MediaQuery.of(context).size;
+    if(Platform.isAndroid){
+      return showDialog(
+        context: context, 
+        builder: (context){
+          return AlertDialog(
+            content: Container(
+              height: size.height*0.4,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(image),
+                  fit: BoxFit.contain
+                )
               ),
-            );
-          }
+            ),
+            actions: [
+              MaterialButton(
+                elevation: 5,
+                child: Text("Cerrar"),
+                textColor: Colors.grey,
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        },
+      );
+    }
+
+    showCupertinoDialog(
+      context: context, 
+      builder: (_){
+        return CupertinoAlertDialog(
+          content: Container(
+            height: size.height*0.4,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(image),
+                fit: BoxFit.contain
+              )
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              child: Text("Cerrar"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
         );
-      },
+      }
     );
   }
 

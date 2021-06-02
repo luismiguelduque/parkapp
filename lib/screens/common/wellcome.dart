@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_page_indicators/flutter_page_indicators.dart';
 import 'package:parkapp/utils/app_theme.dart';
 import 'package:parkapp/widgets/custom_general_button.dart';

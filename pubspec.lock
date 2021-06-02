@@ -223,6 +223,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_facebook_login:
+    dependency: "direct main"
+    description:
+      name: flutter_facebook_login
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -506,6 +513,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  simple_auth:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "04bd4736ddb8db84a41e5f0d9c36303320cda8da"
+      url: "https://github.com/luismiguelduque/simple_auth.git"
+    source: git
+    version: "2.0.8"
+  simple_auth_flutter:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: aafcdb8281bfdee442a2b97930e516d75ded4091
+      url: "https://github.com/luismiguelduque/simple_auth_flutter.git"
+    source: git
+    version: "2.0.8"
   sky_engine:
     dependency: transitive
     description: flutter
