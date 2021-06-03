@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_auth/simple_auth.dart' as simpleAuth;
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import '../../utils/constants.dart';
 import '../../providers/auth_provider.dart';
@@ -50,9 +51,6 @@ class _SignInState extends State<SignIn> {
     ],
   );
 
-  final simpleAuth.FacebookApi _fcApi = simpleAuth.FacebookApi(
-      "facebook", fbClientId, fbClientSecret, fbRedirectURL);
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -83,7 +81,7 @@ class _SignInState extends State<SignIn> {
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
-                            "Ingresa con tu usuario de instagram",
+                            "Ingresa con tu usuario de redes",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -100,14 +98,12 @@ class _SignInState extends State<SignIn> {
                                 SizedBox(
                                   width: 24,
                                 ),
-                                /*
                                 Expanded(
                                   child: getFTButton(),
                                 ),
                                 SizedBox(
                                   width: 16,
                                 ),
-                                */
                                 Expanded(
                                   child: getFTButton(isFacebook: false),
                                 ),
@@ -288,58 +284,40 @@ class _SignInState extends State<SignIn> {
         },
       ).catchError(
         (Object e) {
-          setState(() => _errorMsg = e.toString());
-        },
-      );
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Future<void> _loginAndGetDataFC() async {
-    try {
-      _fcApi.authenticate().then(
-        (simpleAuth.Account _user) async {
-          simpleAuth.OAuthAccount user = _user;
-          setState(() {
-            _errorMsg = null;
-          });
-          final resp = await Provider.of<AuthProvider>(context, listen: false)
-              .logInFacebook(user.token);
-          if (resp['success']) {
-            _goLogin(resp);
-          } else {
-            showErrorMessage(context, resp["message"]);
+          if (this.mounted) {
+            setState(() {
+              _isSaving = false;
+              _errorMsg = e.toString();
+            });
           }
         },
-      ).catchError(
-        (Object e) {
-          setState(() => _errorMsg = e.toString());
-        },
       );
     } catch (error) {
       print(error);
     }
   }
 
-  /*
-          final Uri uri = Uri.https("graph.instagram.com", "/me", {
-            "fields": "username,id,account_type,media_count",
-            "access_token": user.token,
-          });
-          final response = await http.get( uri);
-          final extractedData = json.decode(response.body) as Map<String, dynamic>;
-          var igUserResponse = 
-              await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
-            '/me',
-            queryParameters: {
-              // Get the fields you need.
-              // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
-              "fields": "username,id,account_type,media_count",
-              "access_token": user.token,
-            },
-          );
-          */
+  Future<void> _loginAndGetDataFB() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        final resp = await Provider.of<AuthProvider>(context, listen: false)
+            .logInFacebook(result.accessToken.token);
+        if (resp['success']) {
+          _goLogin(resp);
+        } else {
+          showErrorMessage(context, resp["message"]);
+        }
+      }
+    } catch (error) {
+      print(error);
+      if (this.mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
 
   void _goLogin(resp) async {
     await FirebaseAuth.instance.signInAnonymously();
@@ -403,7 +381,7 @@ class _SignInState extends State<SignIn> {
                 _isSaving = true;
               });
               if (isFacebook) {
-                await loginWithFacebook(context);
+                await _loginAndGetDataFB();
               } else {
                 await _loginAndGetDataIG();
               }

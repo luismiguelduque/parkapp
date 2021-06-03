@@ -7,9 +7,7 @@ import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:parkapp/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:simple_auth/simple_auth.dart' as simpleAuth;
-//import 'package:simple_auth_flutter/simple_auth_flutter.dart';
-//import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import '../../utils/app_theme.dart';
 import '../../utils/functions.dart';
@@ -86,7 +84,7 @@ class _SignUpState extends State<SignUp> {
                           Padding(
                             padding: const EdgeInsets.only(top: 25, bottom: 10),
                             child: Text(
-                              "Ingresa con tu usuario de instagram",
+                              "Ingresa con tu usuario de redes",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
@@ -103,14 +101,12 @@ class _SignUpState extends State<SignUp> {
                                   SizedBox(
                                     width: 24,
                                   ),
-                                  /*
                                   Expanded(
                                     child: getFTButton(),
                                   ),
                                   SizedBox(
                                     width: 16,
                                   ),
-                                  */
                                   Expanded(
                                     child: getFTButton(isFacebook: false),
                                   ),
@@ -308,35 +304,36 @@ class _SignUpState extends State<SignUp> {
         },
       ).catchError(
         (Object e) {
-          setState(() => _errorMsg = e.toString());
+          if (this.mounted) {
+            setState(() {
+              _isSaving = false;
+              _errorMsg = e.toString();
+            });
+          }
         },
       );
     } catch (error) {
       print(error);
+      if (this.mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
   }
 
-  Future<void> _loginAndGetDataFC() async {
+  Future<void> _loginAndGetDataFB() async {
     try {
-      _fcApi.authenticate().then(
-        (simpleAuth.Account _user) async {
-          simpleAuth.OAuthAccount user = _user;
-          setState(() {
-            _errorMsg = null;
-          });
-          final resp = await Provider.of<AuthProvider>(context, listen: false)
-              .logInFacebook(user.token);
-          if (resp['success']) {
-            _goLogin(resp);
-          } else {
-            showErrorMessage(context, resp["message"]);
-          }
-        },
-      ).catchError(
-        (Object e) {
-          setState(() => _errorMsg = e.toString());
-        },
-      );
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        final resp = await Provider.of<AuthProvider>(context, listen: false)
+            .logInFacebook(result.accessToken.token);
+        if (resp['success']) {
+          _goLogin(resp);
+        } else {
+          showErrorMessage(context, resp["message"]);
+        }
+      }
     } catch (error) {
       print(error);
     }
@@ -404,7 +401,7 @@ class _SignUpState extends State<SignUp> {
                 _isSaving = true;
               });
               if (isFacebook) {
-                await loginWithFacebook(context);
+                await _loginAndGetDataFB();
               } else {
                 await _loginAndGetDataIG();
               }
