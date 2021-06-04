@@ -47,12 +47,8 @@ class _SignUpState extends State<SignUp> {
     igRedirectURL,
     scopes: [
       'user_profile', // For getting username, account type, etc.
-      'user_media', // For accessing media count & data like posts, videos etc.
     ],
   );
-
-  final simpleAuth.FacebookApi _fcApi = simpleAuth.FacebookApi(
-      "facebook", fbClientId, fbClientSecret, fbRedirectURL);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +80,7 @@ class _SignUpState extends State<SignUp> {
                           Padding(
                             padding: const EdgeInsets.only(top: 25, bottom: 10),
                             child: Text(
-                              "Ingresa con tu usuario de redes",
+                              "Ingresa con tu usuario de Facebook",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
@@ -99,19 +95,19 @@ class _SignUpState extends State<SignUp> {
                               child: Row(
                                 children: <Widget>[
                                   SizedBox(
-                                    width: 24,
+                                    width: 30,
                                   ),
                                   Expanded(
                                     child: getFTButton(),
                                   ),
-                                  SizedBox(
+                                  /* SizedBox(
                                     width: 16,
                                   ),
                                   Expanded(
                                     child: getFTButton(isFacebook: false),
-                                  ),
+                                  ), */
                                   SizedBox(
-                                    width: 24,
+                                    width: 30,
                                   )
                                 ],
                               ),
@@ -330,9 +326,11 @@ class _SignUpState extends State<SignUp> {
             .logInFacebook(result.accessToken.token);
         if (resp['success']) {
           _goLogin(resp);
-        } else {
-          showErrorMessage(context, resp["message"]);
         }
+      } else {
+        setState(() {
+          _isSaving = false;
+        });
       }
     } catch (error) {
       print(error);

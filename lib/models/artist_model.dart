@@ -58,7 +58,7 @@ class ArtistModel {
         coverImage: json["cover_image"],
         urlVideo: json["url_video"],
         status: json["status"],
-        requestDate: DateTime.parse(json["request_date"]),
+        requestDate: DateTime.parse(json["request_date"]["date"]),
         artisticGenre: json["artistic_genre"] != null
             ? ArtisticGenreModel.fromJson(json["artistic_genre"])
             : null,

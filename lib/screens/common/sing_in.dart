@@ -47,7 +47,6 @@ class _SignInState extends State<SignIn> {
     igRedirectURL,
     scopes: [
       'user_profile', // For getting username, account type, etc.
-      'user_media', // For accessing media count & data like posts, videos etc.
     ],
   );
 
@@ -81,7 +80,7 @@ class _SignInState extends State<SignIn> {
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
-                            "Ingresa con tu usuario de redes",
+                            "Ingresa con tu usuario de Facebook",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -96,19 +95,19 @@ class _SignInState extends State<SignIn> {
                             child: Row(
                               children: <Widget>[
                                 SizedBox(
-                                  width: 24,
+                                  width: 30,
                                 ),
                                 Expanded(
                                   child: getFTButton(),
                                 ),
-                                SizedBox(
+                                /* SizedBox(
                                   width: 16,
                                 ),
                                 Expanded(
                                   child: getFTButton(isFacebook: false),
-                                ),
+                                ), */
                                 SizedBox(
-                                  width: 24,
+                                  width: 30,
                                 )
                               ],
                             ),
@@ -308,6 +307,10 @@ class _SignInState extends State<SignIn> {
         } else {
           showErrorMessage(context, resp["message"]);
         }
+      } else {
+        setState(() {
+          _isSaving = false;
+        });
       }
     } catch (error) {
       print(error);
