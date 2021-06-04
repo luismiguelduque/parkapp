@@ -34,10 +34,9 @@ String formatTimeOfDay(TimeOfDay tod) {
 
 String formaterDateTime(DateTime fecha) {
   if (fecha != null) {
-    print("fecha ----");
-    print(fecha);
-    return formatDate(fecha, [dd, '/', mm, '/', yyyy, ' - ', hh, ':', mm])
-        .toString();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+    final String formatted = formatter.format(fecha);
+    return formatted;
   }
   return "";
 }
