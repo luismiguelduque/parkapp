@@ -169,6 +169,47 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>> logInApple(String token) async {
+    Map<String, dynamic> respJson = {};
+    final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/sign-in-with-apple", {}) : Uri.http(apiUrl, "api/auth/sign-in-with-apple", {});
+    try {
+      final response = await http.post(
+        uri, 
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: json.encode({
+          'token': token,
+        }),
+      );
+      final decodedResponse = json.decode(response.body) as Map<String, dynamic>;
+      if (decodedResponse['success'] && decodedResponse.containsKey('token')) {
+        setPreferences(decodedResponse);
+        respJson['success'] = true;
+        respJson['message'] = 'Bienvenido de vuelta';
+      } else {
+        if(decodedResponse['message'] == 'The given data was invalid'){
+          final Map<String, dynamic> errors = decodedResponse['errors'];
+          errors.forEach((key, value) {
+            respJson['success'] = false;
+            respJson['message'] = value.toString();
+          });
+        }else if(decodedResponse['message'] == 'Datos de acceso incorrectos'){
+          respJson['success'] = false;
+          respJson['message'] = decodedResponse['message'];
+        }else{
+          respJson['success'] = false;
+          respJson['message'] = 'No pudimos procesar tu petición. Por favor, intenta mas tarde';
+        }
+      }
+      return respJson;
+    } catch (error) {
+      print(error);
+      return {};
+    }
+  }
+
   Future<Map<String, dynamic>> forgetPassword(String email) async {
     Map<String, dynamic> respJson = {};
     final Uri uri =developmentMode ? Uri.https(apiUrl, "api/auth/resset-password/$email", {}) : Uri.http(apiUrl, "api/auth/resset-password/$email", {});

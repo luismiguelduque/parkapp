@@ -5,8 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io' show Platform;
 import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../utils/constants.dart';
 import '../../providers/auth_provider.dart';
@@ -67,8 +69,7 @@ class _SignInState extends State<SignIn> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding:
-                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: appBar(),
               ),
               Expanded(
@@ -80,7 +81,7 @@ class _SignInState extends State<SignIn> {
                         Padding(
                           padding: const EdgeInsets.only(top: 25, bottom: 10),
                           child: Text(
-                            "Ingresa con tu usuario de Facebook",
+                            !Platform.isAndroid ? "Ingresa con tu cuenta de:" : "Ingresa con tu cuenta de facebook",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -90,29 +91,18 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 30,
-                                ),
-                                Expanded(
-                                  child: getFTButton(),
-                                ),
-                                /* SizedBox(
-                                  width: 16,
-                                ),
-                                Expanded(
-                                  child: getFTButton(isFacebook: false),
-                                ), */
-                                SizedBox(
-                                  width: 30,
-                                )
-                              ],
-                            ),
-                          ),
+                          child: getFTButton(),
+                          width: 300.0,
                         ),
+                        if( !Platform.isAndroid )
+                          SizedBox(
+                            height: 16,
+                          ),
+                        if( !Platform.isAndroid )
+                          Container(
+                            child: getAppleButton(),
+                            width: 300.0,
+                          ),
                         SizedBox(
                           height: 20,
                         ),
@@ -180,11 +170,9 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             InkWell(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
                               onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed("forget-password");
+                                Navigator.of(context).pushNamed("forget-password");
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -228,8 +216,7 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             InkWell(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
                               onTap: () {
                                 Navigator.of(context).pushNamed("sing-up");
                               },
@@ -273,8 +260,7 @@ class _SignInState extends State<SignIn> {
           setState(() {
             _errorMsg = null;
           });
-          final resp = await Provider.of<AuthProvider>(context, listen: false)
-              .logInInstagram(user.token);
+          final resp = await Provider.of<AuthProvider>(context, listen: false).logInInstagram(user.token);
           if (resp['success']) {
             _goLogin(resp);
           } else {
@@ -296,12 +282,52 @@ class _SignInState extends State<SignIn> {
     }
   }
 
+  Future<void> _loginAndGetDataApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        /*webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.parkappar.app',
+          redirectUri: Uri.parse(
+            'https://parkapp-8940b.firebaseapp.com/__/auth/handler',
+          ),
+        ),*/
+        // TODO: Remove these if you have no need for them
+        //nonce: 'example-nonce',
+        //state: 'example-state',
+      );
+      print("****** TESTTEST ******");
+      print(credential);
+      
+      setState(() {
+        _errorMsg = null;
+      });
+      final resp = await Provider.of<AuthProvider>(context, listen: false).logInApple(credential.authorizationCode);
+      if (resp['success']) {
+        _goLogin(resp);
+      } else {
+        showErrorMessage(context, resp["message"]);
+      }
+      
+    } catch (error) {
+      print("****** TEST ERROR ******");
+      print(error);
+      if (this.mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
   Future<void> _loginAndGetDataFB() async {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
-        final resp = await Provider.of<AuthProvider>(context, listen: false)
-            .logInFacebook(result.accessToken.token);
+        final resp = await Provider.of<AuthProvider>(context, listen: false).logInFacebook(result.accessToken.token);
         if (resp['success']) {
           _goLogin(resp);
         } else {
@@ -329,31 +355,16 @@ class _SignInState extends State<SignIn> {
     final prefs = new Preferences();
     if (prefs.token != "0" && prefs.token != null) {
       if (prefs.cityId < 1 || prefs.neighborhoodId < 1) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => AskLocation()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
       } else {
         if (prefs.userTypeId == 1) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AudienceEventsScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
         } else if (prefs.userTypeId == 2) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ArtistEventsScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
         } else if (prefs.userTypeId == 3) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AdminEventsScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
         } else {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AudienceEventsScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
         }
       }
     }
@@ -395,23 +406,14 @@ class _SignInState extends State<SignIn> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                if (!_isSaving)
-                  Icon(
-                      isFacebook
-                          ? FontAwesomeIcons.facebookF
-                          : FontAwesomeIcons.instagram,
-                      size: 20,
-                      color: Colors.white),
+                if (!_isSaving) Icon(isFacebook ? FontAwesomeIcons.facebookF : FontAwesomeIcons.instagram, size: 20, color: Colors.white),
                 SizedBox(
                   width: 4,
                 ),
                 if (!_isSaving)
                   Text(
-                    isFacebook ? "Facebook" : "Instagram",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Colors.white),
+                    isFacebook ? "Iniciar sesión con Facebook" : "Instagram",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
                   ),
                 if (_isSaving) CircularProgressIndicator(),
               ],
@@ -421,6 +423,59 @@ class _SignInState extends State<SignIn> {
       ),
     );
   }
+
+  Widget getAppleButton() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: HexColor("#000000"),
+        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: AppTheme.getTheme().dividerColor,
+            blurRadius: 8,
+            offset: Offset(4, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+          highlightColor: Colors.transparent,
+          onTap: () async {
+            if (!_isSaving) {
+              setState(() {
+                _isSaving = true;
+              });
+              await _loginAndGetDataApple();
+            }
+          },
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                if (!_isSaving) Icon(FontAwesomeIcons.apple, size: 20, color: Colors.white),
+                SizedBox(
+                  width: 4,
+                ),
+                if (!_isSaving)
+                  Text(
+                    "Iniciar sesión con Apple",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
+                  ),
+                if (_isSaving) CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  //com.parkappar.app
+  //7BF74LV274
 
   Widget appBar() {
     return Column(
@@ -476,8 +531,7 @@ class _SignInState extends State<SignIn> {
       setState(() {
         _isSaving = true;
       });
-      final resp = await Provider.of<AuthProvider>(context, listen: false)
-          .logIn(_email, _password);
+      final resp = await Provider.of<AuthProvider>(context, listen: false).logIn(_email, _password);
       print(resp['success']);
       if (resp['success']) {
         await _auth.signInAnonymously();
@@ -486,33 +540,16 @@ class _SignInState extends State<SignIn> {
         final prefs = new Preferences();
         if (prefs.token != "0" && prefs.token != null) {
           if (prefs.cityId < 1 || prefs.neighborhoodId < 1) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => AskLocation()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AskLocation()));
           } else {
             if (prefs.userTypeId == 1) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          AudienceEventsScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
             } else if (prefs.userTypeId == 2) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ArtistEventsScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ArtistEventsScreen()));
             } else if (prefs.userTypeId == 3) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => AdminEventsScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AdminEventsScreen()));
             } else {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          AudienceEventsScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => AudienceEventsScreen()));
             }
           }
         }
